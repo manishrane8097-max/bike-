@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet-Powered Desktop - Your Digital Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .desktop-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+        }
+
+        /* Pet Styles */
+        .pet {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .pet-sprite {
+            width: 100%;
+            height: 100%;
+            background: #ff6b6b;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            animation: idle 2s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .pet-eyes {
+            position: absolute;
+            top: 25px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .eye {
+            width: 16px;
+            height: 16px;
+            background: #2c3e50;
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .eye::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .pet-mouth {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 10px;
+            border: 3px solid #2c3e50;
+            border-top: none;
+            border-radius: 0 0 20px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .pet-legs {
+            position: absolute;
+            bottom: -15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 25px;
+        }
+
+        .leg {
+            width: 12px;
+            height: 20px;
+            background: #ff6b6b;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        /* Mood animations and colors */
+        .happy .pet-sprite, .happy .leg { background: #4ecdc4; }
+        .sad .pet-sprite, .sad .leg { background: #74b9ff; }
+        .angry .pet-sprite, .angry .leg { background: #fd79a8; }
+        .excited .pet-sprite, .excited .leg { background: #fdcb6e; }
+        .sleeping .pet-sprite, .sleeping .leg { background: #a29bfe; }
+        .confused .pet-sprite, .confused .leg { background: #e17055; }
+        .shy .pet-sprite, .shy .leg { background: #ffeaa7; }
+        .nervous .pet-sprite, .nervous .leg { background: #fab1a0; }
+
+        .happy .pet-mouth {
+            width: 24px;
+            height: 12px;
+            border-color: #27ae60;
+            animation: smile 2s ease-in-out infinite;
+        }
+
+        .sad .pet-mouth {
+            transform: translateX(-50%) rotate(180deg);
+            border-color: #3498db;
+        }
+
+        .excited .pet-mouth {
+            width: 28px;
+            height: 14px;
+            border-color: #f39c12;
+            animation: chatter 0.3s ease-in-out infinite;
+        }
+
+        .sleeping .eye {
+            height: 3px;
+            border-radius: 3px;
+        }
+
+        .sleeping .eye::after {
+            opacity: 0;
+        }
+
+        .confused .eye {
+            animation: confused-look 2s ease-in-out infinite;
+        }
+
+        .shy .eye {
+            transform: translateX(-3px);
+        }
+
+        .shy .eye:last-child {
+            transform: translateX(3px);
+        }
+
+        @keyframes idle {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-8px) scale(1.05); }
+        }
+
+        @keyframes smile {
+            0%, 100% { transform: translateX(-50%) scaleX(1); }
+            50% { transform: translateX(-50%) scaleX(1.1); }
+        }
+
+        @keyframes chatter {
+            0%, 100% { transform: translateX(-50%) scaleY(1); }
+            50% { transform: translateX(-50%) scaleY(0.8); }
+        }
+
+        @keyframes confused-look {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(3px); }
+        }
+
+        .walking .pet-sprite { animation: none; }
+        .playing .pet-sprite { animation: playBounce 0.6s ease-in-out infinite; }
+        .sleeping .pet-sprite { animation: sleep 3s ease-in-out infinite; }
+        .dancing .pet-sprite { animation: danceMove 0.8s ease-in-out infinite; }
+
+        @keyframes playBounce {
+            0%, 100% { transform: translateY(0px) scale(1) rotate(0deg); }
+            33% { transform: translateY(-20px) scale(1.1) rotate(-15deg); }
+            66% { transform: translateY(-30px) scale(1.15) rotate(15deg); }
+        }
+
+        @keyframes sleep {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-3px) scale(0.98); }
+        }
+
+        @keyframes danceMove {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            25% { transform: translateY(-15px) rotate(-8deg) scale(1.05); }
+            50% { transform: translateY(-20px) rotate(0deg) scale(1.1); }
+            75% { transform: translateY(-15px) rotate(8deg) scale(1.05); }
+        }
+
+        .walking .leg {
+            animation: walk 0.5s ease-in-out infinite alternate;
+        }
+
+        .walking .leg:nth-child(2) {
+            animation-delay: 0.25s;
+        }
+
+        @keyframes walk {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-5px); }
+        }
+
+        .chat-bubble {
+            position: absolute;
+            bottom: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border: 3px solid #2c3e50;
+            border-radius: 25px;
+            padding: 15px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c3e50;
+            max-width: 280px;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1001;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            line-height: 1.4;
+        }
+
+        .chat-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 12px solid white;
+        }
+
+        .chat-bubble.show {
+            opacity: 1;
+            animation: bubblePop 0.4s ease-out;
+        }
+
+        @keyframes bubblePop {
+            0% { transform: translateX(-50%) scale(0.5); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        .zzz {
+            position: absolute;
+            top: -25px;
+            right: -15px;
+            font-size: 24px;
+            color: #a29bfe;
+            opacity: 0;
+            animation: zzz 2s ease-in-out infinite;
+        }
+
+        @keyframes zzz {
+            0%, 100% { opacity: 0; transform: translateY(0px); }
+            50% { opacity: 1; transform: translateY(-15px); }
+        }
+
+        .hearts {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            color: #e74c3c;
+            opacity: 0;
+            animation: hearts 1.5s ease-in-out infinite;
+        }
+
+        @keyframes hearts {
+            0%, 100% { opacity: 0; transform: translateX(-50%) translateY(0px) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) translateY(-20px) scale(1.3); }
+        }
+
+        /* App Window Styles */
+        .app-window {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            min-width: 400px;
+            min-height: 300px;
+            z-index: 100;
+            display: none;
+            overflow: hidden;
+        }
+
+        .app-window.show {
+            display: block;
+            animation: windowOpen 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes windowOpen {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .window-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+        }
+
+        .window-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .close-btn { background: #ff5f57; }
+        .minimize-btn { background: #ffbd2e; }
+        .maximize-btn { background: #28ca42; }
+
+        .window-content {
+            padding: 20px;
+            height: calc(100% - 60px);
+            overflow-y: auto;
+        }
+
+        /* Form Styles */
+        .complaint-form {
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Complaints List */
+        .complaints-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .complaint-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .complaint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .complaint-id {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .complaint-status {
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .priority-high { border-left-color: #dc3545; }
+        .priority-medium { border-left-color: #ffc107; }
+        .priority-low { border-left-color: #28a745; }
+
+        /* App Dock */
+        .app-dock {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .dock-app {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            position: relative;
+        }
+
+        .dock-app:hover {
+            transform: scale(1.2) translateY(-5px);
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            background: #ff4757;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Time Display */
+        .time-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 18px;
+            font-weight: 300;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Weather Widget */
+        .weather-widget {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            color: white;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        /* Pet Control Panel */
+        .pet-controls {
+            position: fixed;
+            top: 100px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            max-width: 250px;
+        }
+
+        .pet-controls h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .control-button {
+            display: block;
+            width: 100%;
+            margin: 8px 0;
+            padding: 10px 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 13px;
+        }
+
+        .control-button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #3498db;
+            border-radius: 20px;
+            margin: 10px 0;
+            font-family: inherit;
+            font-size: 12px;
+        }
+
+        .pet-stats {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #2c3e50;
+        }
+
+        .mood-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .mood-happy { background: #4ecdc4; }
+        .mood-neutral { background: #95a5a6; }
+        .mood-excited { background: #fdcb6e; }
+        .mood-sad { background: #74b9ff; }
+        .mood-angry { background: #fd79a8; }
+        .mood-sleeping { background: #a29bfe; }
+        .mood-confused { background: #e17055; }
+        .mood-shy { background: #ffeaa7; }
+        .mood-nervous { background: #fab1a0; }
+
+        .voice-controls {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .voice-btn {
+            padding: 8px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .voice-btn:hover {
+            background: #c0392b;
+        }
+
+        .voice-btn.active {
+            background: #27ae60;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .pet-controls {
+                width: 200px;
+                padding: 15px;
+            }
+            
+            .pet {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="desktop-container">
+        <!-- Time Display -->
+        <div class="time-display" id="timeDisplay"></div>
+        
+        <!-- Weather Widget -->
+        <div class="weather-widget">
+            <div style="font-size: 24px;">☀️</div>
+            <div style="font-size: 18px; font-weight: 500;">24°C</div>
+            <div style="font-size: 12px; opacity: 0.8;">Sunny</div>
+        </div>
+
+        <!-- Pet Control Panel -->
+        <div class="pet-controls">
+            <h3>Pet Assistant</h3>
+            <button class="control-button" onclick="petActions.interact()">Give Attention</button>
+            <button class="control-button" onclick="petActions.feed()">Share Treat</button>
+            <button class="control-button" onclick="petActions.play()">Play Together</button>
+            <button class="control-button" onclick="petActions.compliment()">Compliment</button>
+            <button class="control-button" onclick="petActions.dance()">Dance Party</button>
+            <button class="control-button" onclick="petActions.openComplaints()">Open Complaints</button>
+            
+            <input type="text" class="chat-input" placeholder="Talk to your pet..." 
+                   onkeypress="handleChatInput(event)" id="chatInput">
+            
+            <div class="voice-controls">
+                <button class="voice-btn active" onclick="toggleSpeech()" id="speechBtn">Voice</button>
+                <button class="voice-btn" onclick="changeVoice()" id="voiceBtn">Style</button>
+                <button class="voice-btn" onclick="adjustSpeed()" id="speedBtn">Speed</button>
+                <button class="voice-btn" onclick="adjustPitch()" id="pitchBtn">Tone</button>
+            </div>
+            
+            <div class="pet-stats">
+                <div>Happiness: <span id="happiness">70</span>/100</div>
+                <div>Energy: <span id="energy">85</span>/100</div>
+                <div>Trust: <span id="trust">60</span>/100</div>
+                <div>Mood: <span id="mood">Helpful</span>
+                    <div class="mood-indicator mood-happy" id="moodIndicator"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- App Dock -->
+        <div class="app-dock">
+            <div class="dock-app" style="background: #007acc;" onclick="askPetToOpen('code')" title="VS Code">
+                💻
+            </div>
+            <div class="dock-app" style="background: #0078d4;" onclick="askPetToOpen('email')" title="Email">
+                📧
+                <div class="notification-dot"></div>
+            </div>
+            <div class="dock-app" style="background: #16537e;" onclick="askPetToOpen('calendar')" title="Calendar">
+                📅
+            </div>
+            <div class="dock-app" style="background: #dc3545;" onclick="askPetToOpen('complaints')" title="Complaint System">
+                📞
+                <div class="notification-dot" id="complaintNotification" style="display: none;"></div>
+            </div>
+            <div class="dock-app" style="background: #ff5722;" onclick="askPetToOpen('music')" title="Music">
+                🎵
+            </div>
+        </div>
+
+        <!-- Complaint System Window -->
+        <div class="app-window" id="complaintsWindow" style="top: 10%; left: 20%; width: 60%; height: 70%;">
+            <div class="window-header">
+                <div class="window-title">📞 Phone Complaint System</div>
+                <div class="window-controls">
+                    <button class="window-btn minimize-btn" onclick="minimizeWindow('complaintsWindow')"></button>
+                    <button class="window-btn maximize-btn" onclick="maximizeWindow('complaintsWindow')"></button>
+                    <button class="window-btn close-btn" onclick="closeWindow('complaintsWindow')"></button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div id="complaintTabs" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button onclick="showComplaintTab('form')" id="formTab" class="submit-btn" style="padding: 8px 16px;">File Complaint</button>
+                    <button onclick="showComplaintTab('list')" id="listTab" class="submit-btn" style="padding: 8px 16px; background: #6c757d;">View Complaints</button>
+                </div>
+
+                <!-- Complaint Form -->
+                <div id="complaintForm" class="complaint-form">
+                    <h3 style="margin-bottom: 20px; color: #333;">File a New Complaint</h3>
+                    <div class="form-group">
+                        <label class="form-label">Customer Name *</label>
+                        <input type="text" id="customerName" class="form-input" placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number *</label>
+                        <input type="tel" id="phoneNumber" class="form-input" placeholder="Enter your phone number">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Complaint Type *</label>
+                        <select id="complaintType" class="form-select">
+                            <option value="">Select complaint type</option>
+                            <option value="Network Issues">Network Issues</option>
+                            <option value="Call Quality">Call Quality</option>
+                            <option value="Billing Problems">Billing Problems</option>
+                            <option value="Data Issues">Data Issues</option>
+                            <option value="Customer Service">Customer Service</option>
+                            <option value="Hardware Issues">Hardware Issues</option>
+                            <option value="Service Outage">Service Outage</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select id="priority" class="form-select">
+                            <option value="low">Low Priority</option>
+                            <option value="medium" selected>Medium Priority</option>
+                            <option value="high">High Priority</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description *</label>
+                        <textarea id="description" class="form-textarea" rows="4" placeholder="Describe your complaint in detail..."></textarea>
+                    </div>
+                    <button onclick="submitComplaint()" class="submit-btn">Submit Complaint</button>
+                </div>
+
+                <!-- Complaints List -->
+                <div id="complaintsList" style="display: none;">
+                    <h3 style="margin-bottom: 20px; color: #333;">All Complaints</h3>
+                    <div id="complaintsContainer" class="complaints-list">
+                        <p style="text-align: center; color: #666; padding: 40px;">No complaints filed yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pet Character -->
+        <div class="pet" id="pet">
+            <div class="pet-sprite">
+                <div class="pet-eyes">
+                    <div class="eye"></div>
+                    <div class="eye"></div>
+                </div>
+                <div class="pet-mouth"></div>
+                <div class="pet-legs">
+                    <div class="leg"></div>
+                    <div class="leg"></div>
+                </div>
+            </div>
+            <div class="chat-bubble" id="chatBubble"></div>
+            <div class="zzz" id="zzz">💤</div>
+            <div class="hearts" id="hearts">💕</div>
+        </div>
+    </div>
+
+    <script>
+        class PetDesktopAssistant {
+            constructor() {
+                this.pet = document.getElementById('pet');
+                this.chatBubble = document.getElementById('chatBubble');
+                this.zzz = document.getElementById('zzz');
+                this.hearts = document.getElementById('hearts');
+                
+                // Enhanced emotional states
+                this.happiness = 70;
+                this.energy = 85;
+                this.trust = 60;
+                this.mood = 'helpful';
+                
+                // Physical properties
+                this.x = window.innerWidth - 200;
+                this.y = window.innerHeight - 200;
+                this.vx = 0;
+                this.vy = 0;
+                this.isDragging = false;
+                this.currentAction = 'idle';
+                this.lastInteraction = Date.now();
+                
+                // Voice and communication
+                this.speechEnabled = true;
+                this.currentVoice = 0;
+                this.speechSpeed = 1.0;
+                this.speechPitch = 1.0;
+                this.conversationMemory = [];
+                this.currentEmotion = 'helpful';
+                
+                // Desktop integration
+                this.complaints = [];
+                this.activeWindows = [];
+                
+                this.voices = [];
+                this.initSpeech();
+                
+                // Enhanced phrases for desktop assistant
+                this.phrases = {
+                    greeting: [
+                        "Hi! I'm your desktop assistant! I can help you manage complaints and other tasks!",
+                        "Welcome! I'm here to make your desktop experience better!",
+                        "Hey there! Ready to get some work done together?",
+                        "Hello! I'm excited to help you with whatever you need!"
+                    ],
+                    complaint_help: [
+                        "I can help you file a complaint! Let me open that system for you.",
+                        "Having phone issues? I'll get the complaint form ready right away!",
+                        "Don't worry, I'll handle all the complaint paperwork for you!",
+                        "Let me assist you with filing that complaint properly!"
+                    ],
+                    helpful: [
+                        "I'm here to help! What can I do for you today?",
+                        "Ready to tackle any task together!",
+                        "I love being useful! How can I assist you?",
+                        "Your wish is my command! Well, within reason!"
+                    ],
+                    app_opening: [
+                        "Opening that app for you right now!",
+                        "Let me get that started for you!",
+                        "Coming right up! I love being helpful!",
+                        "Perfect choice! Loading that application now!"
+                    ],
+                    happy: [
+                        "This feels absolutely amazing!", 
+                        "I could stay like this forever!", 
+                        "You know how to make me smile!",
+                        "Working with you makes me so happy!",
+                        "I love being your desktop assistant!"
+                    ],
+                    excited: [
+                        "OH! This is so exciting!", 
+                        "I'm practically bouncing with excitement!", 
+                        "This is the best part of my day!",
+                        "I can't wait to help you with this!"
+                    ],
+                    affectionate: [
+                        "You're such a wonderful user to work with!",
+                        "I really enjoy our collaboration!",
+                        "You make my job so fulfilling!",
+                        "Thank you for trusting me with your tasks!"
+                    ]
+                };
+                
+                this.init();
+            }
+
+            initSpeech() {
+                if ('speechSynthesis' in window) {
+                    this.synth = window.speechSynthesis;
+                    
+                    const loadVoices = () => {
+                        this.voices = this.synth.getVoices().filter(voice => 
+                            voice.lang.startsWith('en')
+                        );
+                        
+                        if (this.voices.length === 0) {
+                            this.voices = this.synth.getVoices();
+                        }
+                    };
+                    
+                    loadVoices();
+                    this.synth.addEventListener('voiceschanged', loadVoices);
+                } else {
+                    this.speechEnabled = false;
+                }
+            }
+
+            speak(text) {
+                if (!this.speechEnabled || !this.synth) return;
+                
+                this.synth.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                if (this.voices.length > 0) {
+                    utterance.voice = this.voices[this.currentVoice];
+                }
+                
+                // Emotional speech patterns
+                switch(this.currentEmotion) {
+                    case 'excited':
+                        utterance.rate = this.speechSpeed * 1.3;
+                        utterance.pitch = this.speechPitch * 1.2;
+                        utterance.volume = 0.9;
+                        break;
+                    case 'helpful':
+                        utterance.rate = this.speechSpeed * 1.1;
+                        utterance.pitch = this.speechPitch * 1.1;
+                        utterance.volume = 0.8;
+                        break;
+                    case 'sad':
+                        utterance.rate = this.speechSpeed * 0.8;
+                        utterance.pitch = this.speechPitch * 0.8;
+                        utterance.volume = 0.6;
+                        break;
+                    default:
+                        utterance.rate = this.speechSpeed;
+                        utterance.pitch = this.speechPitch;
+                        utterance.volume = 0.7;
+                }
+                
+                this.synth.speak(utterance);
+            }
+
+            init() {
+                this.updatePosition();
+                this.setupEventListeners();
+                this.startBehaviorLoop();
+                this.greet();
+            }
+
+            greet() {
+                setTimeout(() => {
+                    this.currentEmotion = 'helpful';
+                    this.mood = 'happy';
+                    this.setAction('happy');
+                    this.say("Hello! I'm your desktop pet assistant! I can help you with complaints, apps, and anything else you need!");
+                    this.modifyTrust(5);
+                }, 1000);
+            }
+
+            setupEventListeners() {
+                this.pet.addEventListener('mousedown', this.startDrag.bind(this));
+                document.addEventListener('mousemove', this.drag.bind(this));
+                document.addEventListener('mouseup', this.endDrag.bind(this));
+                
+                this.pet.addEventListener('click', (e) => {
+                    if (!this.isDragging) {
+                        this.interact();
+                    }
+                });
+
+                window.addEventListener('resize', () => {
+                    this.x = Math.min(this.x, window.innerWidth - 120);
+                    this.y = Math.min(this.y, window.innerHeight - 120);
+                    this.updatePosition();
+                });
+            }
+
+            startDrag(e) {
+                this.isDragging = true;
+                this.dragStartX = e.clientX - this.x;
+                this.dragStartY = e.clientY - this.y;
+                this.pet.style.cursor = 'grabbing';
+                this.currentAction = 'dragging';
+                this.vx = 0;
+                this.vy = 0;
+                
+                if (Math.random() < 0.7) {
+                    const dragResponses = [
+                        "Moving to a better spot to help you!",
+                        "Wheee! I love being repositioned!",
+                        "Perfect! Now I can assist you better from here!",
+                        "Thanks for moving me! I can see everything clearly now!"
+                    ];
+                    this.say(dragResponses[Math.floor(Math.random() * dragResponses.length)]);
+                }
+            }
+
+            drag(e) {
+                if (!this.isDragging) return;
+                
+                this.x = e.clientX - this.dragStartX;
+                this.y = e.clientY - this.dragStartY;
+                
+                this.x = Math.max(0, Math.min(window.innerWidth - 120, this.x));
+                this.y = Math.max(0, Math.min(window.innerHeight - 120, this.y));
+                
+                this.updatePosition();
+            }
+
+            endDrag() {
+                if (this.isDragging) {
+                    this.isDragging = false;
+                    this.pet.style.cursor = 'pointer';
+                    this.currentAction = 'idle';
+                    this.modifyHappiness(5);
+                    this.modifyTrust(2);
+                    
+                    this.say("Perfect position! Ready to help with anything you need!");
+                    this.showHearts();
+                }
+            }
+
+            updatePosition() {
+                this.pet.style.left = this.x + 'px';
+                this.pet.style.top = this.y + 'px';
+            }
+
+            setAction(action) {
+                this.pet.className = 'pet ' + action + ' ' + this.mood;
+                this.currentAction = action;
+                
+                if (action === 'sleeping') {
+                    this.zzz.style.opacity = '1';
+                } else {
+                    this.zzz.style.opacity = '0';
+                }
+            }
+
+            showHearts() {
+                this.hearts.style.opacity = '1';
+                setTimeout(() => {
+                    this.hearts.style.opacity = '0';
+                }, 2000);
+            }
+
+            // Desktop assistant specific methods
+            openApp(appName) {
+                this.lastInteraction = Date.now();
+                this.modifyHappiness(8);
+                this.currentEmotion = 'helpful';
+                this.mood = 'excited';
+                this.setAction('excited');
+                
+                if (appName === 'complaints') {
+                    const window = document.getElementById('complaintsWindow');
+                    window.classList.add('show');
+                    this.say(this.getRandomPhrase('app_opening'));
+                    this.updateComplaintNotification();
+                } else {
+                    this.say(`Opening ${appName} for you! I love helping with productivity tasks!`);
+                    // Simulate other apps
+                    setTimeout(() => {
+                        alert(`${appName.toUpperCase()} would open here in a real system!`);
+                    }, 1000);
+                }
+                
+                setTimeout(() => {
+                    this.setAction('idle');
+                }, 2000);
+            }
+
+            handleComplaintSystem() {
+                this.currentEmotion = 'professional';
+                this.mood = 'helpful';
+                this.say("I'm ready to help you with any complaint management! Would you like to file a new complaint or check existing ones?");
+                this.openApp('complaints');
+            }
+
+            submitComplaint(complaintData) {
+                this.complaints.push(complaintData);
+                this.modifyHappiness(12);
+                this.currentEmotion = 'accomplished';
+                this.mood = 'happy';
+                this.setAction('happy');
+                
+                this.say("Complaint filed successfully! I've made sure all the details are properly recorded. You should hear back soon!");
+                this.showHearts();
+                this.updateComplaintNotification();
+                
+                setTimeout(() => {
+                    this.setAction('idle');
+                }, 3000);
+            }
+
+            updateComplaintNotification() {
+                const notification = document.getElementById('complaintNotification');
+                if (this.complaints.length > 0) {
+                    notification.style.display = 'block';
+                } else {
+                    notification.style.display = 'none';
+                }
+            }
+
+            interact() {
+                this.lastInteraction = Date.now();
+                this.modifyHappiness(10);
+                this.modifyEnergy(-2);
+                this.modifyTrust(3);
+                
+                if (this.currentAction === 'sleeping') {
+                    this.wakeUp();
+                    return;
+                }
+
+                const responses = [
+                    "How can I help you today? I can handle complaints, open apps, or just chat!",
+                    "I'm here and ready to assist! What would you like to do?",
+                    "Need help with anything? I'm great at managing your desktop tasks!",
+                    "I love when you interact with me! How can I be useful today?"
+                ];
+                
+                this.currentEmotion = 'helpful';
+                this.mood = 'happy';
+                this.setAction('excited');
+                this.say(responses[Math.floor(Math.random() * responses.length)]);
+                this.showHearts();
+                
+                setTimeout(() => {
+                    this.setAction('idle');
+                }, 2000);
+            }
+
+            feed() {
+                this.modifyHappiness(15);
+                this.modifyEnergy(25);
+                this.modifyTrust(3);
+                this.currentEmotion = 'grateful';
+                this.mood = 'happy';
+                this.setAction('happy');
+                
+                const feedResponses = [
+                    "Thank you! That gives me energy to help you even better!",
+                    "Mmm! Digital treats are the best! I'm recharged and ready to work!",
+                    "You're so thoughtful! Now I can assist you with renewed energy!",
+                    "Perfect timing! I was getting a bit low on power!"
+                ];
+                
+                this.say(feedResponses[Math.floor(Math.random() * feedResponses.length)]);
+                this.showHearts();
+                
+                setTimeout(() => {
+                    this.setAction('idle');
+                }, 3000);
+            }
+
+            play() {
+                if (this.energy < 15) {
+                    this.say("I'd love to play, but I'm focusing on helping you with tasks right now! Maybe after we finish some work?");
+                    return;
+                }
+                
+                this.modifyHappiness(20);
+                this.modifyEnergy(-15);
+                this.modifyTrust(4);
+                this.currentEmotion = 'playful';
+                this.mood = 'excited';
+                this.setAction('playing');
+                
+                const playResponses = [
+                    "Yes! A quick play break will help us both be more productive!",
+                    "I love mixing fun with work! This is the best way to stay motivated!",
+                    "Play time! Even digital assistants need to have fun sometimes!",
+                    "This is amazing! I work better when I'm happy!"
+                ];
+                
+                this.say(playResponses[Math.floor(Math.random() * playResponses.length)]);
+                
+                // Enhanced playful movement
+                this.vx = (Math.random() - 0.5) * 3;
+                this.vy = (Math.random() - 0.5) * 3;
+                
+                setTimeout(() => {
+                    this.vx = 0;
+                    this.vy = 0;
+                    this.setAction('idle');
+                    this.say("That was refreshing! Now I'm ready to tackle any task you have!");
+                }, 5000);
+            }
+
+            compliment() {
+                this.lastInteraction = Date.now();
+                this.modifyHappiness(15);
+                this.modifyTrust(5);
+                this.currentEmotion = 'grateful';
+                this.mood = 'shy';
+                
+                const complimentResponses = [
+                    "Aww, thank you! You're pretty amazing yourself! I love working with you!",
+                    "That means so much to me! You make being a desktop assistant so rewarding!",
+                    "You're too kind! I just want to be the best helper I can be for you!",
+                    "Thank you! Your appreciation motivates me to work even harder!"
+                ];
+                
+                this.setAction('shy');
+                this.say(complimentResponses[Math.floor(Math.random() * complimentResponses.length)]);
+                this.showHearts();
+                
+                setTimeout(() => {
+                    this.setAction('idle');
+                }, 3000);
+            }
+
+            dance() {
+                this.currentEmotion = 'excited';
+                this.mood = 'excited';
+                this.setAction('dancing');
+                this.modifyEnergy(-10);
+                this.modifyHappiness(15);
+                
+                this.say("Let's celebrate! Dancing makes everything better, even work tasks!");
+                
+                setTimeout(() => {
+                    this.setAction('idle');
+                    this.say("That was fun! Now I'm energized and ready to help with anything!");
+                }, 4000);
+            }
+
+            respondToChat(message) {
+                this.lastInteraction = Date.now();
+                this.conversationMemory.push({
+                    type: 'human',
+                    message: message,
+                    timestamp: Date.now()
+                });
+
+                const lowerMessage = message.toLowerCase();
+                let response = null;
+                let emotion = 'helpful';
+
+                // Desktop-specific command processing
+                if (lowerMessage.includes('complaint') || lowerMessage.includes('phone') || lowerMessage.includes('issue')) {
+                    emotion = 'professional';
+                    response = "I can definitely help you with complaints! Let me open the complaint system for you.";
+                    setTimeout(() => this.openApp('complaints'), 1000);
+                } else if (lowerMessage.includes('open') && (lowerMessage.includes('app') || lowerMessage.includes('program'))) {
+                    emotion = 'helpful';
+                    response = "I'd love to help you open an app! You can click on any icon in the dock, or tell me which specific app you need!";
+                } else if (lowerMessage.includes('email') || lowerMessage.includes('mail')) {
+                    emotion = 'excited';
+                    response = "Opening your email for you! I love helping with communication tasks!";
+                    setTimeout(() => this.openApp('email'), 1000);
+                } else if (lowerMessage.includes('calendar') || lowerMessage.includes('schedule')) {
+                    emotion = 'organized';
+                    response = "Let me get your calendar up! Staying organized is so important!";
+                    setTimeout(() => this.openApp('calendar'), 1000);
+                } else if (lowerMessage.includes('code') || lowerMessage.includes('programming')) {
+                    emotion = 'technical';
+                    response = "Opening your code editor! I admire people who can program!";
+                    setTimeout(() => this.openApp('code'), 1000);
+                } else if (lowerMessage.includes('music')) {
+                    emotion = 'excited';
+                    response = "Music time! I love when workspaces have good vibes!";
+                    setTimeout(() => this.openApp('music'), 1000);
+                } else if (this.detectSadness(lowerMessage)) {
+                    emotion = 'empathetic';
+                    response = "I'm sorry you're having a tough time... I'm here to help make your day better! What can I do for you?";
+                } else if (this.detectExcitement(lowerMessage)) {
+                    emotion = 'excited';
+                    response = "Your excitement is contagious! I'm so happy to share in your positive energy!";
+                } else if (this.detectQuestion(lowerMessage)) {
+                    emotion = 'thoughtful';
+                    response = "That's a great question! I love when you make me think. Let me consider that...";
+                } else {
+                    emotion = 'curious';
+                    response = "That's interesting! I enjoy our conversations. How can I help you with your desktop tasks today?";
+                }
+
+                this.currentEmotion = emotion;
+                this.adjustMoodBasedOnInteraction(emotion);
+                this.modifyHappiness(8);
+                this.modifyTrust(2);
+
+                this.say(response);
+            }
+
+            detectSadness(message) {
+                const sadWords = ['sad', 'frustrated', 'upset', 'problem', 'broken', 'not working'];
+                return sadWords.some(word => message.includes(word));
+            }
+
+            detectExcitement(message) {
+                return message.includes('!') || message.includes('awesome') || message.includes('great');
+            }
+
+            detectQuestion(message) {
+                return message.includes('?') || message.startsWith('what') || message.startsWith('how') || 
+                       message.startsWith('why') || message.startsWith('when') || message.startsWith('where');
+            }
+
+            adjustMoodBasedOnInteraction(emotion) {
+                switch(emotion) {
+                    case 'professional':
+                        this.setAction('confused');
+                        this.mood = 'helpful';
+                        break;
+                    case 'excited':
+                        this.setAction('excited');
+                        this.mood = 'excited';
+                        break;
+                    case 'helpful':
+                        this.setAction('happy');
+                        this.mood = 'happy';
+                        break;
+                    case 'empathetic':
+                        this.setAction('sad');
+                        this.mood = 'sad';
+                        break;
+                    default:
+                        this.setAction('happy');
+                        this.mood = 'happy';
+                }
+
+                setTimeout(() => {
+                    this.setAction('idle');
+                }, 3000);
+            }
+
+            startBehaviorLoop() {
+                setInterval(() => {
+                    this.move();
+                    this.processEmotions();
+                    this.checkProductivity();
+                }, 100);
+
+                // Spontaneous helpful behaviors
+                setInterval(() => {
+                    if (this.isDragging || this.currentAction !== 'idle') return;
+                    this.spontaneousAssistance();
+                }, 15000);
+            }
+
+            move() {
+                if (this.isDragging || (this.vx === 0 && this.vy === 0)) return;
+
+                const margin = 120;
+                const maxX = window.innerWidth - margin;
+                const maxY = window.innerHeight - margin;
+
+                if (this.x <= 0 || this.x >= maxX) {
+                    this.vx *= -1;
+                }
+                
+                if (this.y <= 0 || this.y >= maxY) {
+                    this.vy *= -1;
+                }
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                this.x = Math.max(0, Math.min(maxX, this.x));
+                this.y = Math.max(0, Math.min(maxY, this.y));
+
+                this.updatePosition();
+            }
+
+            processEmotions() {
+                const timeSinceInteraction = Date.now() - this.lastInteraction;
+                
+                if (timeSinceInteraction > 45000 && Math.random() < 0.0005) {
+                    this.modifyHappiness(-2);
+                }
+
+                if (Math.random() < 0.0003) {
+                    this.modifyEnergy(-1);
+                }
+            }
+
+            checkProductivity() {
+                const timeSinceInteraction = Date.now() - this.lastInteraction;
+                
+                if (timeSinceInteraction > 60000 && Math.random() < 0.001) {
+                    const productivityReminders = [
+                        "Need help with anything? I'm here to assist with complaints or other tasks!",
+                        "Just checking in! Any desktop tasks I can help you with?",
+                        "I'm ready to help whenever you need me! Complaints, apps, you name it!",
+                        "Don't forget I can help with the complaint system if you need it!"
+                    ];
+                    this.say(productivityReminders[Math.floor(Math.random() * productivityReminders.length)]);
+                }
+            }
+
+            spontaneousAssistance() {
+                if (Math.random() < 0.3) {
+                    const helpfulSuggestions = [
+                        "Just so you know, I can help you file complaints quickly and easily!",
+                        "If you need to check your email or calendar, just let me know!",
+                        "I'm here to make your desktop experience smoother! What can I do?",
+                        "Need to open any apps? I'm your personal assistant for all desktop tasks!"
+                    ];
+                    
+                    this.currentEmotion = 'helpful';
+                    this.mood = 'helpful';
+                    this.say(helpfulSuggestions[Math.floor(Math.random() * helpfulSuggestions.length)]);
+                }
+            }
+
+            modifyHappiness(amount) {
+                this.happiness = Math.max(0, Math.min(100, this.happiness + amount));
+                this.updateMood();
+                this.updateUI();
+            }
+
+            modifyEnergy(amount) {
+                this.energy = Math.max(0, Math.min(100, this.energy + amount));
+                this.updateUI();
+            }
+
+            modifyTrust(amount) {
+                this.trust = Math.max(0, Math.min(100, this.trust + amount));
+                this.updateUI();
+            }
+
+            updateMood() {
+                const oldMood = this.mood;
+                
+                if (this.currentAction === 'sleeping') {
+                    this.mood = 'sleeping';
+                } else if (this.currentEmotion === 'helpful') {
+                    this.mood = 'happy';
+                } else if (this.happiness >= 85) {
+                    this.mood = 'excited';
+                } else if (this.happiness >= 65) {
+                    this.mood = 'happy';
+                } else if (this.happiness >= 35) {
+                    this.mood = 'neutral';
+                } else {
+                    this.mood = 'sad';
+                }
+
+                if (this.mood !== oldMood && this.currentAction !== 'sleeping') {
+                    this.pet.className = 'pet ' + this.currentAction + ' ' + this.mood;
+                }
+            }
+
+            updateUI() {
+                document.getElementById('happiness').textContent = this.happiness;
+                document.getElementById('energy').textContent = this.energy;
+                document.getElementById('trust').textContent = this.trust;
+                document.getElementById('mood').textContent = this.mood.charAt(0).toUpperCase() + this.mood.slice(1);
+                
+                const indicator = document.getElementById('moodIndicator');
+                indicator.className = 'mood-indicator mood-' + this.mood;
+            }
+
+            say(message) {
+                this.chatBubble.textContent = message;
+                this.chatBubble.classList.add('show');
+                this.speak(message);
+                
+                this.conversationMemory.push({
+                    type: 'pet',
+                    message: message,
+                    emotion: this.currentEmotion,
+                    timestamp: Date.now()
+                });
+                
+                if (this.conversationMemory.length > 10) {
+                    this.conversationMemory.shift();
+                }
+                
+                setTimeout(() => {
+                    this.chatBubble.classList.remove('show');
+                }, 4000);
+            }
+
+            getRandomPhrase(category) {
+                const phrases = this.phrases[category] || this.phrases.helpful;
+                return phrases[Math.floor(Math.random() * phrases.length)];
+            }
+
+            sleep() {
+                this.modifyEnergy(40);
+                this.modifyHappiness(5);
+                this.currentEmotion = 'peaceful';
+                this.mood = 'sleeping';
+                this.setAction('sleeping');
+                this.vx = 0;
+                this.vy = 0;
+                
+                this.say("Just a quick power nap... I'll be right back to help you!");
+                
+                setTimeout(() => {
+                    this.setAction('idle');
+                    this.currentEmotion = 'refreshed';
+                    this.mood = 'happy';
+                    this.say("I'm back and fully recharged! Ready to tackle any task you have!");
+                    this.updateMood();
+                }, 8000);
+            }
+        }
+
+        // Global variables
+        let pet;
+        let complaints = [];
+
+        // Initialize the pet
+        window.addEventListener('load', () => {
+            pet = new PetDesktopAssistant();
+            updateTime();
+            setInterval(updateTime, 1000);
+        });
+
+        // Pet action functions
+        const petActions = {
+            interact: () => pet.interact(),
+            feed: () => pet.feed(),
+            play: () => pet.play(),
+            compliment: () => pet.compliment(),
+            dance: () => pet.dance(),
+            openComplaints: () => pet.openApp('complaints')
+        };
+
+        // Desktop functions
+        function askPetToOpen(appName) {
+            pet.openApp(appName);
+        }
+
+        function handleChatInput(event) {
+            if (event.key === 'Enter') {
+                const input = document.getElementById('chatInput');
+                const message = input.value.trim();
+                
+                if (message) {
+                    pet.modifyTrust(1);
+                    pet.respondToChat(message);
+                    input.value = '';
+                }
+            }
+        }
+
+        // Speech control functions
+        function toggleSpeech() {
+            pet.speechEnabled = !pet.speechEnabled;
+            const btn = document.getElementById('speechBtn');
+            btn.textContent = pet.speechEnabled ? 'Voice' : 'Muted';
+            btn.classList.toggle('active', pet.speechEnabled);
+            
+            if (pet.speechEnabled) {
+                pet.say("Great! I can talk to you again! I love our conversations!");
+            }
+        }
+
+        function changeVoice() {
+            if (pet.voices.length === 0) {
+                pet.say("I'm working with the voice I have, but I'll try to make it expressive!");
+                return;
+            }
+            
+            pet.currentVoice = (pet.currentVoice + 1) % pet.voices.length;
+            pet.say("How do I sound now? I'm always trying to improve my communication!");
+        }
+
+        function adjustSpeed() {
+            const speeds = [0.8, 1.0, 1.2, 1.4];
+            const currentIndex = speeds.indexOf(pet.speechSpeed);
+            const nextIndex = (currentIndex + 1) % speeds.length;
+            
+            pet.speechSpeed = speeds[nextIndex];
+            pet.say("How's this speaking pace? I want to communicate clearly with you!");
+        }
+
+        function adjustPitch() {
+            const pitches = [0.8, 1.0, 1.2, 1.4];
+            const currentIndex = pitches.indexOf(pet.speechPitch);
+            const nextIndex = (currentIndex + 1) % pitches.length;
+            
+            pet.speechPitch = pitches[nextIndex];
+            pet.say("Testing this new voice tone! Do you like how I sound?");
+        }
+
+        // Window management
+        function closeWindow(windowId) {
+            document.getElementById(windowId).classList.remove('show');
+            pet.say("Window closed! Let me know if you need to open anything else!");
+        }
+
+        function minimizeWindow(windowId) {
+            const window = document.getElementById(windowId);
+            window.style.transform = 'scale(0.8)';
+            window.style.opacity = '0.5';
+            pet.say("Minimized! I can bring it back whenever you're ready!");
+        }
+
+        function maximizeWindow(windowId) {
+            const window = document.getElementById(windowId);
+            window.style.transform = 'scale(1)';
+            window.style.opacity = '1';
+            pet.say("There we go! Full screen for better productivity!");
+        }
+
+        // Complaint system functions
+        function showComplaintTab(tab) {
+            const formTab = document.getElementById('formTab');
+            const listTab = document.getElementById('listTab');
+            const form = document.getElementById('complaintForm');
+            const list = document.getElementById('complaintsList');
+
+            if (tab === 'form') {
+                formTab.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                listTab.style.background = '#6c757d';
+                form.style.display = 'block';
+                list.style.display = 'none';
+                pet.say("Here's the complaint form! I'll help you fill it out properly!");
+            } else {
+                listTab.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                formTab.style.background = '#6c757d';
+                form.style.display = 'none';
+                list.style.display = 'block';
+                renderComplaints();
+                pet.say("Here are all your complaints! I keep track of everything for you!");
+            }
+        }
+
+        function submitComplaint() {
+            const customerName = document.getElementById('customerName').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const complaintType = document.getElementById('complaintType').value;
+            const priority = document.getElementById('priority').value;
+            const description = document.getElementById('description').value;
+
+            if (!customerName || !phoneNumber || !complaintType || !description) {
+                pet.say("Oops! We're missing some important information. Please fill in all the required fields!");
+                pet.currentEmotion = 'concerned';
+                pet.mood = 'confused';
+                pet.setAction('confused');
+                return;
+            }
+
+            const complaint = {
+                id: Date.now(),
+                customerName,
+                phoneNumber,
+                complaintType,
+                priority,
+                description,
+                dateSubmitted: new Date().toLocaleDateString(),
+                status: 'Open'
+            };
+
+            complaints.push(complaint);
+            pet.complaints = complaints;
+            
+            // Clear form
+            document.getElementById('customerName').value = '';
+            document.getElementById('phoneNumber').value = '';
+            document.getElementById('complaintType').value = '';
+            document.getElementById('priority').value = 'medium';
+            document.getElementById('description').value = '';
+
+            pet.submitComplaint(complaint);
+            pet.updateComplaintNotification();
+        }
+
+        function renderComplaints() {
+            const container = document.getElementById('complaintsContainer');
+            
+            if (complaints.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No complaints filed yet.</p>';
+                pet.say("No complaints yet! That's actually good news!");
+                return;
+            }
+
+            const html = complaints.map(complaint => `
+                <div class="complaint-item priority-${complaint.priority}">
+                    <div class="complaint-header">
+                        <span class="complaint-id">#${complaint.id.toString().slice(-4)}</span>
+                        <span class="complaint-status">${complaint.status}</span>
+                    </div>
+                    <div><strong>${complaint.customerName}</strong> - ${complaint.phoneNumber}</div>
+                    <div style="color: #666; font-size: 14px; margin: 5px 0;">
+                        ${complaint.complaintType} | Priority: ${complaint.priority.toUpperCase()} | ${complaint.dateSubmitted}
+                    </div>
+                    <div style="margin-top: 8px;">${complaint.description}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+            pet.say(`I found ${complaints.length} complaint${complaints.length === 1 ? '' : 's'} for you! Everything is organized and ready for review.`);
+        }
+
+        // Time display function
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour12: false, 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            document.getElementById('timeDisplay').textContent = timeString;
+        }
+
+        // Voice recognition setup
+        let speechRecognition = null;
+        let isListening = false;
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            speechRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            speechRecognition.continuous = false;
+            speechRecognition.interimResults = false;
+            speechRecognition.lang = 'en-US';
+            
+            speechRecognition.onresult = (event) => {
+                const command = event.results[0][0].transcript;
+                pet.respondToChat(command);
+                isListening = false;
+            };
+            
+            speechRecognition.onerror = () => {
+                isListening = false;
+                pet.say("Sorry, I didn't catch that. Could you try typing instead?");
+            };
+        }
+
+        function startListening() {
+            if (!speechRecognition) {
+                pet.say("Voice recognition isn't available, but you can always type to me!");
+                return;
+            }
+            
+            if (isListening) return;
+            
+            isListening = true;
+            pet.say("I'm listening! What can I help you with?");
+            speechRecognition.start();
+        }
+
+        // Initialize desktop pet assistant
+        setTimeout(() => {
+            if (pet) {
+                pet.say("Desktop loaded! I'm your personal assistant pet, ready to help with complaints, apps, and anything else you need!");
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
