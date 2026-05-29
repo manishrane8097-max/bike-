@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Oakridge Timber Co. — Premium Wood Supplier</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream:#f5f0e8; --cream2:#ede6d5; --bark:#2c2016; --bark2:#3d2e1a;
+      --forest:#2d4a2d; --moss:#4a6741; --amber:#c07c2a; --gold:#d4933c;
+      --sand:#a8895a; --muted:#7a6a52;
+      --serif:'Cormorant Garamond',Georgia,serif;
+      --sans:'Outfit',sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--cream); color: var(--bark);
+      font-family: var(--sans); font-weight: 300; line-height: 1.7;
+      overflow-x: hidden; cursor: none;
+    }
+
+    /* ══ PROGRESS BAR ══ */
+    #progress-bar {
+      position: fixed; top: 0; left: 0; height: 2px;
+      background: var(--gold); z-index: 9999;
+      width: 0%; transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(212,147,60,0.6);
+    }
+
+    /* ══ CUSTOM CURSOR ══ */
+    #cursor-dot {
+      position: fixed; width: 8px; height: 8px;
+      background: var(--gold); border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: transform 0.1s, background 0.3s, width 0.3s, height 0.3s;
+    }
+    #cursor-ring {
+      position: fixed; width: 36px; height: 36px;
+      border: 1.5px solid var(--gold); border-radius: 50%;
+      pointer-events: none; z-index: 9997;
+      transform: translate(-50%,-50%);
+      transition: transform 0.18s ease, width 0.3s, height 0.3s, opacity 0.3s, border-color 0.3s;
+      opacity: 0.6;
+    }
+    body.cursor-hover #cursor-dot { width: 14px; height: 14px; background: var(--amber); }
+    body.cursor-hover #cursor-ring { width: 56px; height: 56px; opacity: 0.4; }
+
+    /* ══ PAGE LOADER ══ */
+    #loader {
+      position: fixed; inset: 0; background: var(--bark);
+      z-index: 10000; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 2rem;
+    }
+    .loader-rings {
+      position: relative; width: 100px; height: 100px;
+    }
+    .loader-ring {
+      position: absolute; border-radius: 50%; border: 1px solid transparent;
+      animation: loaderSpin linear infinite;
+    }
+    .loader-ring:nth-child(1) { inset:0; border-top-color: var(--gold); animation-duration:1.4s; }
+    .loader-ring:nth-child(2) { inset:12px; border-right-color: rgba(212,147,60,0.6); animation-duration:1.8s; animation-direction:reverse; }
+    .loader-ring:nth-child(3) { inset:24px; border-bottom-color: rgba(212,147,60,0.35); animation-duration:2.4s; }
+    .loader-text {
+      font-family: var(--serif); font-size: 0.8rem; letter-spacing: 0.3em;
+      text-transform: uppercase; color: rgba(245,240,232,0.4);
+      animation: loaderPulse 1.4s ease-in-out infinite;
+    }
+    @keyframes loaderSpin { to { transform: rotate(360deg); } }
+    @keyframes loaderPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+    #loader.hide { animation: loaderFade 0.7s forwards; }
+    @keyframes loaderFade { to { opacity:0; pointer-events:none; } }
+
+    /* ══ GRAIN OVERLAY ══ */
+    body::after {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:9990;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.035'/%3E%3C/svg%3E");
+      opacity: 0.7;
+    }
+
+    /* ══ SCROLLBAR ══ */
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:var(--cream); }
+    ::-webkit-scrollbar-thumb { background:var(--sand); border-radius:3px; }
+
+    /* ══ NAV ══ */
+    nav {
+      position:fixed; top:0; width:100%;
+      padding:1.4rem 5rem;
+      display:flex; justify-content:space-between; align-items:center;
+      z-index:200;
+      transition: background 0.4s, box-shadow 0.4s, padding 0.4s;
+    }
+    nav.scrolled {
+      background:rgba(245,240,232,0.94); backdrop-filter:blur(12px);
+      box-shadow:0 1px 0 rgba(44,32,22,0.1); padding:1rem 5rem;
+    }
+    .nav-brand { display:flex; align-items:center; gap:0.9rem; text-decoration:none; color:var(--bark); }
+    .nav-icon {
+      width:36px; height:36px; background:var(--forest);
+      display:flex; align-items:center; justify-content:center; border-radius:4px;
+      transition: transform 0.4s, background 0.3s;
+    }
+    .nav-brand:hover .nav-icon { transform: rotate(15deg); background: var(--amber); }
+    .nav-icon svg { width:20px; height:20px; fill:var(--cream); }
+    .nav-logo-text { font-family:var(--serif); font-size:1.3rem; font-weight:700; letter-spacing:0.02em; }
+    .nav-logo-sub { font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); }
+    .nav-links { display:flex; gap:2.5rem; list-style:none; }
+    .nav-links a {
+      font-size:0.82rem; letter-spacing:0.07em; text-transform:uppercase;
+      color:var(--muted); text-decoration:none; position:relative;
+      transition: color 0.3s;
+    }
+    .nav-links a::after {
+      content:''; position:absolute; bottom:-3px; left:0; right:0;
+      height:1px; background:var(--amber);
+      transform:scaleX(0); transform-origin:left;
+      transition: transform 0.3s ease;
+    }
+    .nav-links a:hover { color:var(--bark); }
+    .nav-links a:hover::after { transform:scaleX(1); }
+    .nav-cta {
+      padding:0.6rem 1.6rem; background:var(--forest);
+      color:var(--cream) !important; border-radius:2px;
+      transition: background 0.3s, transform 0.2s !important;
+    }
+    .nav-cta:hover { background:var(--bark) !important; transform:scale(1.04); }
+    .nav-cta::after { display:none !important; }
+
+    /* ══ HERO ══ */
+    #hero {
+      min-height:100vh; background:var(--bark);
+      display:grid; grid-template-columns:1fr 1fr;
+      position:relative; overflow:hidden;
+    }
+    /* Floating sawdust particles canvas */
+    #particles-canvas {
+      position:absolute; inset:0; pointer-events:none; z-index:1;
+    }
+    .hero-left {
+      display:flex; flex-direction:column; justify-content:flex-end;
+      padding:8rem 4rem 5rem 5rem;
+      position:relative; z-index:2;
+    }
+    .hero-tag {
+      display:inline-flex; align-items:center; gap:0.6rem;
+      font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase;
+      color:var(--gold); margin-bottom:1.8rem;
+      opacity:0; animation:fadeUp 0.7s 0.5s forwards;
+    }
+    .hero-tag::before { content:''; display:block; width:1.5rem; height:1px; background:var(--gold); }
+    .hero-h1 {
+      font-family:var(--serif); font-size:clamp(3.2rem,6vw,6.5rem);
+      font-weight:700; line-height:1.0; color:var(--cream);
+      letter-spacing:-0.01em; margin-bottom:0.3rem;
+      opacity:0; animation:fadeUp 0.8s 0.7s forwards;
+      overflow:hidden;
+    }
+    .hero-h1 span { color:var(--gold); font-style:italic; font-weight:300; }
+    .hero-h1-sub {
+      font-family:var(--serif); font-size:clamp(2rem,4vw,4.2rem);
+      font-weight:300; font-style:italic;
+      color:rgba(245,240,232,0.45); line-height:1.1; margin-bottom:2.5rem;
+      opacity:0; animation:fadeUp 0.8s 0.9s forwards;
+    }
+    .hero-desc {
+      color:rgba(245,240,232,0.6); font-size:1rem;
+      max-width:420px; line-height:1.8; margin-bottom:2.5rem;
+      opacity:0; animation:fadeUp 0.7s 1.1s forwards;
+    }
+    .hero-btns {
+      display:flex; gap:1rem;
+      opacity:0; animation:fadeUp 0.7s 1.3s forwards;
+    }
+    .btn {
+      display:inline-block; padding:0.9rem 2.2rem;
+      font-family:var(--sans); font-size:0.82rem;
+      letter-spacing:0.08em; text-transform:uppercase;
+      text-decoration:none; cursor:none; border:none;
+      transition:all 0.3s; position:relative; overflow:hidden;
+    }
+    .btn::before {
+      content:''; position:absolute; inset:0;
+      background:rgba(255,255,255,0.12);
+      transform:translateX(-105%) skewX(-10deg);
+      transition: transform 0.5s ease;
+    }
+    .btn:hover::before { transform:translateX(105%) skewX(-10deg); }
+    .btn-wood { background:var(--gold); color:var(--bark); }
+    .btn-wood:hover { background:var(--amber); }
+    .btn-ghost {
+      background:transparent;
+      border:1px solid rgba(245,240,232,0.25);
+      color:rgba(245,240,232,0.7);
+    }
+    .btn-ghost:hover { border-color:var(--cream); color:var(--cream); }
+
+    /* Hero right panels */
+    .hero-right { position:relative; overflow:hidden; }
+    .hero-panel-grid {
+      position:absolute; inset:0;
+      display:grid; grid-template-columns:repeat(3,1fr);
+      grid-template-rows:repeat(4,1fr);
+      gap:3px; padding:3px;
+    }
+    .wood-panel {
+      border-radius:1px; position:relative; overflow:hidden;
+      transition: transform 0.6s ease, filter 0.4s;
+    }
+    .wood-panel:hover { filter:brightness(1.2); }
+    .wood-panel::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(160deg,rgba(255,255,255,0.04) 0%,transparent 50%,rgba(0,0,0,0.12) 100%);
+    }
+    /* Shimmer sweep on panels */
+    .wood-panel::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,0.07) 50%,transparent 70%);
+      transform:translateX(-100%);
+      animation:panelShimmer 5s ease-in-out infinite;
+    }
+    @keyframes panelShimmer { 0%,100%{transform:translateX(-100%)} 50%{transform:translateX(100%)} }
+    .p1 { background:#3d2a14; grid-column:1/3; grid-row:1/3; animation-delay:0s; }
+    .p2 { background:#2a1f0f; grid-column:3; grid-row:1; animation-delay:0.4s; }
+    .p3 { background:#4a3520; grid-column:3; grid-row:2/4; animation-delay:0.8s; }
+    .p4 { background:#5a3d1e; grid-column:1; grid-row:3/5; animation-delay:1.2s; }
+    .p5 { background:#2d4a2d; grid-column:2; grid-row:3; animation-delay:1.6s; }
+    .p6 { background:#3d2e1a; grid-column:2/4; grid-row:4; animation-delay:2s; }
+    .p1 > div {
+      position:absolute; top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      width:200px; height:200px; border-radius:50%;
+      box-shadow:
+        0 0 0 8px rgba(192,124,42,0.1),
+        0 0 0 20px rgba(192,124,42,0.07),
+        0 0 0 36px rgba(192,124,42,0.05),
+        0 0 0 56px rgba(192,124,42,0.03),
+        0 0 0 80px rgba(192,124,42,0.02);
+      animation:ringPulse 4s ease-in-out infinite;
+    }
+    @keyframes ringPulse {
+      0%,100%{box-shadow:0 0 0 8px rgba(192,124,42,0.1),0 0 0 20px rgba(192,124,42,0.07),0 0 0 36px rgba(192,124,42,0.05),0 0 0 56px rgba(192,124,42,0.03),0 0 0 80px rgba(192,124,42,0.02);}
+      50%{box-shadow:0 0 0 12px rgba(192,124,42,0.18),0 0 0 28px rgba(192,124,42,0.12),0 0 0 48px rgba(192,124,42,0.08),0 0 0 72px rgba(192,124,42,0.05),0 0 0 100px rgba(192,124,42,0.03);}
+    }
+    .hero-panel-overlay {
+      position:absolute; inset:0;
+      background:linear-gradient(to right,var(--bark) 0%,transparent 30%);
+    }
+    .hero-stats {
+      position:absolute; bottom:3rem; right:4rem;
+      display:flex; gap:2rem; z-index:2;
+      opacity:0; animation:fadeUp 0.7s 1.5s forwards;
+    }
+    .stat { text-align:right; }
+    .stat-num {
+      font-family:var(--serif); font-size:2.4rem; font-weight:700;
+      color:var(--gold); line-height:1;
+    }
+    .stat-label { font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:rgba(245,240,232,0.4); }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+    /* ══ TICKER ══ */
+    .ticker { background:var(--forest); padding:0.9rem 0; overflow:hidden; }
+    .ticker-track {
+      display:flex; white-space:nowrap;
+      animation:ticker 30s linear infinite;
+    }
+    .ticker:hover .ticker-track { animation-play-state:paused; }
+    .ticker-item {
+      font-size:0.72rem; letter-spacing:0.16em; text-transform:uppercase;
+      color:rgba(245,240,232,0.7); padding:0 2.5rem;
+      border-right:1px solid rgba(255,255,255,0.12); flex-shrink:0;
+    }
+    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ══ SECTIONS ══ */
+    section { padding:6rem 5rem; }
+    .section-tag {
+      display:inline-flex; align-items:center; gap:0.7rem;
+      font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase;
+      color:var(--amber); margin-bottom:1.2rem;
+    }
+    .section-tag::before { content:'✦'; font-size:0.6rem; }
+    h2.section-title {
+      font-family:var(--serif); font-weight:700;
+      font-size:clamp(2rem,4vw,3.5rem); line-height:1.12;
+    }
+    h2.section-title em { font-style:italic; font-weight:300; color:var(--moss); }
+
+    /* ══ ABOUT ══ */
+    #about { background:var(--cream2); }
+    .about-inner { display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:center; }
+    .about-text { color:var(--muted); margin:1.5rem 0; font-size:1.02rem; line-height:1.9; }
+    .pillars {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:1px; background:rgba(44,32,22,0.1);
+      border:1px solid rgba(44,32,22,0.1); margin-top:2rem;
+    }
+    .pillar {
+      background:var(--cream2); padding:1.4rem 1.6rem;
+      transition:background 0.3s, transform 0.3s;
+    }
+    .pillar:hover { background:var(--cream); transform:scale(1.02); }
+    .pillar-icon { font-size:1.4rem; margin-bottom:0.6rem; }
+    .pillar-title { font-family:var(--serif); font-size:1.05rem; font-weight:600; margin-bottom:0.3rem; }
+    .pillar-text { font-size:0.85rem; color:var(--muted); line-height:1.6; }
+
+    .about-visual { position:relative; height:480px; }
+    .vis-block { position:absolute; border-radius:3px; }
+    .vis-a {
+      top:0; left:0; width:70%; height:70%; background:var(--forest);
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+    }
+    /* Animated tree rings in about */
+    .vis-rings-wrap {
+      position:relative; width:180px; height:180px;
+    }
+    .vis-ring {
+      position:absolute; border-radius:50%; border-style:solid; border-color:rgba(212,147,60,0.25);
+    }
+    .vis-ring:nth-child(1){inset:0;border-width:1px;animation:ringGrow 3s ease-in-out infinite;}
+    .vis-ring:nth-child(2){inset:20px;border-width:1px;animation:ringGrow 3s 0.3s ease-in-out infinite;}
+    .vis-ring:nth-child(3){inset:40px;border-width:1px;animation:ringGrow 3s 0.6s ease-in-out infinite;}
+    .vis-ring:nth-child(4){inset:60px;border-width:1px;animation:ringGrow 3s 0.9s ease-in-out infinite;}
+    .vis-ring:nth-child(5){inset:80px;border-width:2px;border-color:rgba(212,147,60,0.6);animation:ringGrow 3s 1.2s ease-in-out infinite;}
+    @keyframes ringGrow {
+      0%,100%{transform:scale(1);opacity:0.5}
+      50%{transform:scale(1.05);opacity:1}
+    }
+    .vis-b {
+      bottom:0; right:0; width:55%; height:55%; background:var(--amber);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+    }
+    .vis-b-num {
+      font-family:var(--serif); font-size:3.5rem; font-weight:700;
+      color:var(--cream); line-height:1;
+    }
+    .vis-b-label { font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:rgba(245,240,232,0.7); }
+    .vis-c {
+      top:65%; left:65%; width:40%; height:40%; background:var(--bark);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .vis-c svg { width:48px; height:48px; fill:rgba(212,147,60,0.25); animation:svgPulse 2.5s ease-in-out infinite; }
+    @keyframes svgPulse { 0%,100%{fill:rgba(212,147,60,0.2)} 50%{fill:rgba(212,147,60,0.5)} }
+
+    /* ══ PRODUCTS ══ */
+    #products { background:var(--bark); }
+    #products .section-tag { color:var(--gold); }
+    #products h2.section-title { color:var(--cream); }
+    #products h2.section-title em { color:var(--gold); }
+    .products-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:3.5rem; }
+    .products-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,255,255,0.06); }
+    .prod-card {
+      background:var(--bark2); padding:2.2rem;
+      display:flex; flex-direction:column; gap:1rem;
+      transition:background 0.35s, transform 0.4s;
+      cursor:none; position:relative; overflow:hidden;
+      transform-style:preserve-3d;
+    }
+    .prod-card:hover { background:#4a3520; }
+    /* Ripple on card click */
+    .prod-card .ripple {
+      position:absolute; border-radius:50%;
+      background:rgba(212,147,60,0.15);
+      transform:scale(0); animation:ripple 0.6s linear;
+      pointer-events:none;
+    }
+    @keyframes ripple { to{transform:scale(4);opacity:0} }
+    .prod-swatch {
+      width:100%; height:80px; border-radius:2px;
+      margin-bottom:0.5rem; position:relative; overflow:hidden;
+    }
+    .prod-swatch::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(100deg,transparent 0%,rgba(255,255,255,0.18) 50%,transparent 100%);
+      transform:translateX(-100%);
+      transition:transform 0.6s ease;
+    }
+    .prod-card:hover .prod-swatch::before { transform:translateX(100%); }
+    .prod-swatch::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg,rgba(255,255,255,0.06) 0%,transparent 60%);
+    }
+    .swatch-oak    { background:linear-gradient(135deg,#c8945a,#a0703a); }
+    .swatch-teak   { background:linear-gradient(135deg,#7a5c2e,#5c4020); }
+    .swatch-pine   { background:linear-gradient(135deg,#d4aa70,#b08040); }
+    .swatch-walnut { background:linear-gradient(135deg,#4a2c1a,#3a200e); }
+    .swatch-maple  { background:linear-gradient(135deg,#e8c898,#c8a060); }
+    .swatch-cedar  { background:linear-gradient(135deg,#8b3a2a,#6b2a1c); }
+    .prod-name { font-family:var(--serif); font-size:1.3rem; font-weight:600; color:var(--cream); margin-bottom:0.2rem; }
+    .prod-grade { font-size:0.68rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); }
+    .prod-desc { font-size:0.88rem; color:rgba(245,240,232,0.5); line-height:1.7; }
+    .prod-footer { display:flex; justify-content:space-between; align-items:center; margin-top:auto; }
+    .prod-uses { display:flex; gap:0.4rem; flex-wrap:wrap; }
+    .prod-tag {
+      font-size:0.65rem; letter-spacing:0.08em; text-transform:uppercase;
+      padding:0.25rem 0.65rem; border:1px solid rgba(255,255,255,0.1);
+      color:rgba(245,240,232,0.45); border-radius:1px;
+      transition:border-color 0.3s, color 0.3s;
+    }
+    .prod-card:hover .prod-tag { border-color:rgba(212,147,60,0.3); color:rgba(212,147,60,0.7); }
+    .prod-arrow { color:var(--gold); font-size:1rem; transition:transform 0.35s, color 0.3s; }
+    .prod-card:hover .prod-arrow { transform:translateX(8px) scale(1.2); }
+
+    /* ══ PROCESS ══ */
+    #process { background:var(--cream2); }
+    .process-steps {
+      display:grid; grid-template-columns:repeat(4,1fr);
+      gap:0; margin-top:3.5rem;
+      border:1px solid rgba(44,32,22,0.12);
+    }
+    .step {
+      padding:2.5rem 2rem; border-right:1px solid rgba(44,32,22,0.12);
+      position:relative; transition:background 0.3s, padding-left 0.3s;
+      overflow:hidden;
+    }
+    .step:last-child { border-right:none; }
+    .step:hover { background:var(--cream); padding-left:2.5rem; }
+    /* Animated progress fill on step hover */
+    .step::after {
+      content:''; position:absolute; bottom:0; left:0;
+      height:3px; width:0; background:var(--amber);
+      transition:width 0.5s ease;
+    }
+    .step:hover::after { width:100%; }
+    .step-num {
+      font-family:var(--serif); font-size:3.5rem; font-weight:700;
+      color:rgba(44,32,22,0.06); line-height:1; margin-bottom:1rem;
+      transition:color 0.4s;
+    }
+    .step:hover .step-num { color:rgba(192,124,42,0.15); }
+    .step-icon { font-size:1.5rem; margin-bottom:1rem; display:block; transition:transform 0.4s; }
+    .step:hover .step-icon { transform:scale(1.3) rotate(-8deg); }
+    .step-title { font-family:var(--serif); font-size:1.15rem; font-weight:600; margin-bottom:0.6rem; }
+    .step-text { font-size:0.88rem; color:var(--muted); line-height:1.7; }
+    .step-connector {
+      position:absolute; top:2.5rem; right:-12px;
+      width:24px; height:24px; background:var(--amber); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      color:var(--cream); font-size:0.7rem; z-index:1;
+      animation:connectorPop 2s ease-in-out infinite;
+    }
+    .step:last-child .step-connector { display:none; }
+    @keyframes connectorPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.25)} }
+
+    /* ══ TESTIMONIALS ══ */
+    #testimonials { background:var(--forest); }
+    #testimonials .section-tag { color:rgba(245,240,232,0.5); }
+    #testimonials h2.section-title { color:var(--cream); }
+    #testimonials h2.section-title em { color:rgba(245,240,232,0.5); }
+    .testi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,255,255,0.08); margin-top:3.5rem; }
+    .testi-card {
+      background:rgba(45,74,45,0.6); padding:2.2rem;
+      transition:background 0.3s, transform 0.4s;
+    }
+    .testi-card:hover { background:rgba(45,74,45,0.9); transform:translateY(-6px); }
+    .testi-stars { color:var(--gold); letter-spacing:0.1em; font-size:0.85rem; margin-bottom:1rem; }
+    .testi-quote { font-family:var(--serif); font-style:italic; font-size:1.05rem; font-weight:300; color:rgba(245,240,232,0.85); line-height:1.8; margin-bottom:1.5rem; }
+    .testi-author { display:flex; gap:0.8rem; align-items:center; }
+    .testi-avatar {
+      width:40px; height:40px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-family:var(--serif); font-size:1rem; font-weight:600;
+      color:var(--cream); flex-shrink:0;
+      transition:transform 0.3s;
+    }
+    .testi-card:hover .testi-avatar { transform:scale(1.15) rotate(5deg); }
+    .testi-name { font-weight:500; font-size:0.9rem; color:var(--cream); }
+    .testi-role { font-size:0.75rem; color:rgba(245,240,232,0.45); }
+
+    /* Star animation */
+    .testi-stars span {
+      display:inline-block;
+      animation:starPop 0.4s ease backwards;
+    }
+    .testi-stars span:nth-child(1){animation-delay:0.1s}
+    .testi-stars span:nth-child(2){animation-delay:0.2s}
+    .testi-stars span:nth-child(3){animation-delay:0.3s}
+    .testi-stars span:nth-child(4){animation-delay:0.4s}
+    .testi-stars span:nth-child(5){animation-delay:0.5s}
+    @keyframes starPop { from{transform:scale(0) rotate(-30deg);opacity:0} to{transform:none;opacity:1} }
+
+    /* ══ CTA BANNER ══ */
+    #cta-banner {
+      background:var(--amber); padding:5rem;
+      display:flex; justify-content:space-between;
+      align-items:center; gap:3rem;
+      position:relative; overflow:hidden;
+    }
+    /* Animated diagonal stripes */
+    #cta-banner::before {
+      content:''; position:absolute; inset:0;
+      background:repeating-linear-gradient(
+        -55deg,
+        transparent, transparent 20px,
+        rgba(255,255,255,0.04) 20px, rgba(255,255,255,0.04) 40px
+      );
+      animation:stripeMove 12s linear infinite;
+    }
+    @keyframes stripeMove { to{background-position:80px 0;} }
+    .cta-heading {
+      font-family:var(--serif); font-size:clamp(2rem,4vw,3.2rem);
+      font-weight:700; color:var(--bark); line-height:1.15; position:relative; z-index:1;
+    }
+    .cta-heading em { font-style:italic; font-weight:300; }
+    .btn-dark { background:var(--bark); color:var(--cream); white-space:nowrap; flex-shrink:0; position:relative; z-index:1; }
+    .btn-dark:hover { background:var(--bark2); }
+
+    /* ══ COUNTER STATS BAR ══ */
+    #stats-bar {
+      background:var(--bark); padding:3rem 5rem;
+      display:grid; grid-template-columns:repeat(4,1fr);
+      gap:1px; background-color:var(--bark);
+    }
+    .stat-item {
+      padding:2rem; text-align:center; border-right:1px solid rgba(255,255,255,0.07);
+      transition: background 0.3s;
+    }
+    .stat-item:last-child { border-right:none; }
+    .stat-item:hover { background:rgba(255,255,255,0.03); }
+    .stat-counter {
+      font-family:var(--serif); font-size:3rem; font-weight:700;
+      color:var(--gold); display:block; line-height:1;
+    }
+    .stat-desc { font-size:0.78rem; letter-spacing:0.12em; text-transform:uppercase; color:rgba(245,240,232,0.35); margin-top:0.4rem; }
+
+    /* ══ CONTACT ══ */
+    #contact { background:var(--cream); }
+    .contact-inner { display:grid; grid-template-columns:1fr 1fr; gap:6rem; }
+    .contact-info-item {
+      display:flex; gap:1rem; align-items:flex-start;
+      margin-bottom:1.8rem;
+      transition:transform 0.3s;
+    }
+    .contact-info-item:hover { transform:translateX(6px); }
+    .ci-icon {
+      width:42px; height:42px; background:var(--forest); border-radius:2px;
+      display:flex; align-items:center; justify-content:center;
+      color:var(--cream); font-size:1rem; flex-shrink:0;
+      transition:background 0.3s, transform 0.3s;
+    }
+    .contact-info-item:hover .ci-icon { background:var(--amber); transform:rotate(8deg); }
+    .ci-label { font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
+    .ci-value { font-size:0.95rem; color:var(--bark); font-weight:400; margin-top:0.1rem; }
+
+    .form-group { margin-bottom:1.2rem; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    label { font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:0.4rem; }
+    input, select, textarea {
+      width:100%; background:var(--cream2);
+      border:1px solid rgba(44,32,22,0.12);
+      padding:0.85rem 1rem;
+      font-family:var(--sans); font-size:0.9rem; font-weight:300;
+      color:var(--bark); border-radius:2px; outline:none;
+      transition:border-color 0.3s, background 0.3s;
+      appearance:none;
+    }
+    input:focus, select:focus, textarea:focus { border-color:var(--amber); background:var(--cream); }
+    textarea { resize:vertical; min-height:120px; }
+
+    /* ══ FOOTER ══ */
+    footer { background:var(--bark); padding:4rem 5rem 2rem; }
+    .footer-top { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
+    .footer-logo { font-family:var(--serif); font-size:1.5rem; font-weight:700; color:var(--cream); }
+    .footer-tagline { font-size:0.88rem; color:rgba(245,240,232,0.4); line-height:1.7; max-width:240px; }
+    .footer-col-title { font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:1.2rem; }
+    .footer-links { list-style:none; display:flex; flex-direction:column; gap:0.7rem; }
+    .footer-links a {
+      font-size:0.85rem; color:rgba(245,240,232,0.45); text-decoration:none;
+      transition:color 0.3s, padding-left 0.3s;
+      display:inline-block;
+    }
+    .footer-links a:hover { color:var(--cream); padding-left:0.4rem; }
+    .footer-bottom {
+      border-top:1px solid rgba(255,255,255,0.07); padding-top:1.5rem;
+      display:flex; justify-content:space-between; align-items:center;
+    }
+    .footer-copy { font-size:0.75rem; color:rgba(245,240,232,0.25); }
+    .footer-cert { font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--amber); }
+
+    /* ══ SCROLL REVEAL ══ */
+    .reveal { opacity:0; transform:translateY(32px); transition:opacity 0.75s ease, transform 0.75s ease; }
+    .reveal.from-left { transform:translateX(-32px); }
+    .reveal.from-right { transform:translateX(32px); }
+    .reveal.visible { opacity:1; transform:none; }
+
+    /* ══ RESPONSIVE ══ */
+    @media(max-width:1000px){
+      nav{padding:1.2rem 1.5rem;}
+      nav.scrolled{padding:0.9rem 1.5rem;}
+      .nav-links{display:none;}
+      #hero{grid-template-columns:1fr;}
+      .hero-right{display:none;}
+      .hero-left{padding:8rem 1.5rem 4rem;}
+      section{padding:4rem 1.5rem;}
+      .about-inner,.contact-inner{grid-template-columns:1fr;gap:3rem;}
+      .products-grid{grid-template-columns:1fr 1fr;}
+      .process-steps{grid-template-columns:1fr 1fr;}
+      .step{border-bottom:1px solid rgba(44,32,22,0.12);}
+      .step-connector{display:none;}
+      .testi-grid{grid-template-columns:1fr;}
+      #cta-banner{flex-direction:column;text-align:center;padding:3rem 1.5rem;}
+      #stats-bar{grid-template-columns:1fr 1fr;padding:2rem 1.5rem;}
+      .footer-top{grid-template-columns:1fr 1fr;gap:2rem;}
+      .footer-bottom{flex-direction:column;gap:0.5rem;text-align:center;}
+      body{cursor:auto;}
+      #cursor-dot,#cursor-ring{display:none;}
+    }
+    @media(max-width:600px){
+      .products-grid{grid-template-columns:1fr;}
+      .process-steps{grid-template-columns:1fr;}
+      .form-row{grid-template-columns:1fr;}
+      #stats-bar{grid-template-columns:1fr 1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div id="progress-bar"></div>
+
+<!-- Custom Cursor -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- Page Loader -->
+<div id="loader">
+  <div class="loader-rings">
+    <div class="loader-ring"></div>
+    <div class="loader-ring"></div>
+    <div class="loader-ring"></div>
+  </div>
+  <div class="loader-text">Oakridge Timber Co.</div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-brand" href="#hero">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 22H5.71C6.66 19.55 7.95 17.24 10 16c2.98-1.61 7.14-2 11-1V8z"/><circle cx="5" cy="5" r="2"/></svg>
+    </div>
+    <div>
+      <div class="nav-logo-text">Oakridge Timber Co.</div>
+      <div class="nav-logo-sub">Est. 1978</div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a class="nav-cta" href="#contact">Request Quote</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="particles-canvas"></canvas>
+  <div class="hero-left">
+    <div class="hero-tag">Premium Wood Supplier Since 1978</div>
+    <h1 class="hero-h1">Nature's <span>Finest</span></h1>
+    <div class="hero-h1-sub">Timber, Delivered.</div>
+    <p class="hero-desc">We source, mill, and supply premium hardwoods and softwoods for construction, furniture, and fine woodworking — responsibly harvested, expertly graded.</p>
+    <div class="hero-btns">
+      <a class="btn btn-wood" href="#products">Browse Timber</a>
+      <a class="btn btn-ghost" href="#contact">Get a Quote</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-panel-grid">
+      <div class="wood-panel p1"><div></div></div>
+      <div class="wood-panel p2"></div>
+      <div class="wood-panel p3"></div>
+      <div class="wood-panel p4"></div>
+      <div class="wood-panel p5"></div>
+      <div class="wood-panel p6"></div>
+    </div>
+    <div class="hero-panel-overlay"></div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">45+</div><div class="stat-label">Wood Species</div></div>
+    <div class="stat"><div class="stat-num">2k+</div><div class="stat-label">Clients Served</div></div>
+    <div class="stat"><div class="stat-num">46</div><div class="stat-label">Years Experience</div></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">Oak</span><span class="ticker-item">Teak</span>
+    <span class="ticker-item">Walnut</span><span class="ticker-item">Pine</span>
+    <span class="ticker-item">Maple</span><span class="ticker-item">Cedar</span>
+    <span class="ticker-item">Mahogany</span><span class="ticker-item">Ash</span>
+    <span class="ticker-item">Cherry</span><span class="ticker-item">Birch</span>
+    <span class="ticker-item">Ebony</span><span class="ticker-item">Rosewood</span>
+    <span class="ticker-item">Sapele</span><span class="ticker-item">Douglas Fir</span>
+    <span class="ticker-item">FSC Certified</span><span class="ticker-item">PEFC Approved</span>
+    <span class="ticker-item">Kiln-Dried</span>
+    <!-- duplicate -->
+    <span class="ticker-item">Oak</span><span class="ticker-item">Teak</span>
+    <span class="ticker-item">Walnut</span><span class="ticker-item">Pine</span>
+    <span class="ticker-item">Maple</span><span class="ticker-item">Cedar</span>
+    <span class="ticker-item">Mahogany</span><span class="ticker-item">Ash</span>
+    <span class="ticker-item">Cherry</span><span class="ticker-item">Birch</span>
+    <span class="ticker-item">Ebony</span><span class="ticker-item">Rosewood</span>
+    <span class="ticker-item">Sapele</span><span class="ticker-item">Douglas Fir</span>
+    <span class="ticker-item">FSC Certified</span><span class="ticker-item">PEFC Approved</span>
+    <span class="ticker-item">Kiln-Dried</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div>
+      <div class="section-tag reveal from-left">Who We Are</div>
+      <h2 class="section-title reveal from-left">Rooted in quality, <em>grown in trust.</em></h2>
+      <p class="about-text reveal">For over four decades, Oakridge Timber Co. has been the trusted source for premium hardwoods and softwoods. We work directly with sustainable forests, ensuring every plank meets the highest standards of quality and environmental responsibility.</p>
+      <p class="about-text reveal">From structural beams to fine furniture-grade boards, our range covers every need — with expert grading, kiln-drying, and bespoke milling on request.</p>
+      <div class="pillars reveal">
+        <div class="pillar"><div class="pillar-icon">🌲</div><div class="pillar-title">Sustainably Sourced</div><div class="pillar-text">FSC & PEFC certified. Every tree replaced.</div></div>
+        <div class="pillar"><div class="pillar-icon">📐</div><div class="pillar-title">Expert Grading</div><div class="pillar-text">Hand-inspected by master graders.</div></div>
+        <div class="pillar"><div class="pillar-icon">🚛</div><div class="pillar-title">Nationwide Delivery</div><div class="pillar-text">Fast, reliable logistics across the country.</div></div>
+        <div class="pillar"><div class="pillar-icon">🔧</div><div class="pillar-title">Custom Milling</div><div class="pillar-text">Cut to your exact specifications.</div></div>
+      </div>
+    </div>
+    <div class="about-visual reveal from-right">
+      <div class="vis-block vis-a">
+        <div class="vis-rings-wrap">
+          <div class="vis-ring"></div>
+          <div class="vis-ring"></div>
+          <div class="vis-ring"></div>
+          <div class="vis-ring"></div>
+          <div class="vis-ring"></div>
+        </div>
+      </div>
+      <div class="vis-block vis-b">
+        <div class="vis-b-num" data-count="98" data-suffix="%">0%</div>
+        <div class="vis-b-label">Client Satisfaction</div>
+      </div>
+      <div class="vis-block vis-c">
+        <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 22H5.71C6.66 19.55 7.95 17.24 10 16c2.98-1.61 7.14-2 11-1V8z"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="products-header">
+    <div>
+      <div class="section-tag reveal">Our Range</div>
+      <h2 class="section-title reveal">Premium <em>timber species</em></h2>
+    </div>
+    <a class="btn btn-ghost reveal" href="#contact" style="color:rgba(245,240,232,0.6);margin-bottom:0.5rem;">View Full Catalogue →</a>
+  </div>
+  <div class="products-grid">
+    <div class="prod-card reveal"><div class="prod-swatch swatch-oak"></div><div class="prod-grade">Hardwood · Grade A</div><h3 class="prod-name">English Oak</h3><p class="prod-desc">Dense, strong, and beautifully grained. The benchmark hardwood for flooring, beams, and heritage joinery.</p><div class="prod-footer"><div class="prod-uses"><span class="prod-tag">Flooring</span><span class="prod-tag">Furniture</span><span class="prod-tag">Beams</span></div><span class="prod-arrow">→</span></div></div>
+    <div class="prod-card reveal"><div class="prod-swatch swatch-teak"></div><div class="prod-grade">Hardwood · Grade A+</div><h3 class="prod-name">Burmese Teak</h3><p class="prod-desc">Exceptionally durable with natural oil content. The premier choice for outdoor furniture and marine applications.</p><div class="prod-footer"><div class="prod-uses"><span class="prod-tag">Outdoor</span><span class="prod-tag">Marine</span><span class="prod-tag">Decking</span></div><span class="prod-arrow">→</span></div></div>
+    <div class="prod-card reveal"><div class="prod-swatch swatch-walnut"></div><div class="prod-grade">Hardwood · Grade A</div><h3 class="prod-name">American Walnut</h3><p class="prod-desc">Rich, dark chocolate tones with a fine grain. Prized for cabinetry, veneers, and high-end furniture making.</p><div class="prod-footer"><div class="prod-uses"><span class="prod-tag">Cabinetry</span><span class="prod-tag">Veneers</span></div><span class="prod-arrow">→</span></div></div>
+    <div class="prod-card reveal"><div class="prod-swatch swatch-pine"></div><div class="prod-grade">Softwood · Grade B</div><h3 class="prod-name">Scots Pine</h3><p class="prod-desc">Versatile and cost-effective. Widely used for structural timber, carcassing, and internal joinery.</p><div class="prod-footer"><div class="prod-uses"><span class="prod-tag">Structural</span><span class="prod-tag">Joinery</span></div><span class="prod-arrow">→</span></div></div>
+    <div class="prod-card reveal"><div class="prod-swatch swatch-maple"></div><div class="prod-grade">Hardwood · Grade A</div><h3 class="prod-name">Hard Maple</h3><p class="prod-desc">Pale, creamy tones with exceptional hardness. The go-to for worktops, sports flooring, and dance floors.</p><div class="prod-footer"><div class="prod-uses"><span class="prod-tag">Worktops</span><span class="prod-tag">Flooring</span></div><span class="prod-arrow">→</span></div></div>
+    <div class="prod-card reveal"><div class="prod-swatch swatch-cedar"></div><div class="prod-grade">Softwood · Grade A</div><h3 class="prod-name">Western Red Cedar</h3><p class="prod-desc">Naturally aromatic and rot-resistant. Ideal for cladding, roofing shingles, and garden structures.</p><div class="prod-footer"><div class="prod-uses"><span class="prod-tag">Cladding</span><span class="prod-tag">Roofing</span></div><span class="prod-arrow">→</span></div></div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div id="stats-bar">
+  <div class="stat-item reveal"><span class="stat-counter" data-count="45" data-suffix="+">0</span><div class="stat-desc">Wood Species</div></div>
+  <div class="stat-item reveal"><span class="stat-counter" data-count="2000" data-suffix="+">0</span><div class="stat-desc">Happy Clients</div></div>
+  <div class="stat-item reveal"><span class="stat-counter" data-count="46" data-suffix=" yrs">0</span><div class="stat-desc">Experience</div></div>
+  <div class="stat-item reveal"><span class="stat-counter" data-count="98" data-suffix="%">0</span><div class="stat-desc">Satisfaction Rate</div></div>
+</div>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-tag reveal">How It Works</div>
+  <h2 class="section-title reveal">From forest <em>to your door</em></h2>
+  <div class="process-steps">
+    <div class="step reveal"><div class="step-num">01</div><span class="step-icon">🌳</span><h3 class="step-title">Sustainable Sourcing</h3><p class="step-text">We partner with certified forests and sawmills, ensuring every timber is legally and responsibly harvested with full chain of custody.</p><div class="step-connector">→</div></div>
+    <div class="step reveal"><div class="step-num">02</div><span class="step-icon">🔍</span><h3 class="step-title">Expert Grading</h3><p class="step-text">Every board is hand-inspected and graded by our master team. Only timber meeting our strict standards enters our yard.</p><div class="step-connector">→</div></div>
+    <div class="step reveal"><div class="step-num">03</div><span class="step-icon">🔥</span><h3 class="step-title">Kiln Drying & Milling</h3><p class="step-text">Timber is kiln-dried to optimal moisture content. Custom milling and planing available to your exact dimensions.</p><div class="step-connector">→</div></div>
+    <div class="step reveal"><div class="step-num">04</div><span class="step-icon">🚛</span><h3 class="step-title">Fast Delivery</h3><p class="step-text">Our fleet delivers nationwide. Most stock items dispatched within 48 hours, with real-time tracking provided.</p></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-tag reveal">Client Reviews</div>
+  <h2 class="section-title reveal">Trusted by <em>craftspeople & builders</em></h2>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="testi-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <p class="testi-quote">"The oak flooring boards we received were exceptional — perfectly dried, beautifully consistent grain. Our clients were blown away. Oakridge is our only timber supplier now."</p>
+      <div class="testi-author"><div class="testi-avatar" style="background:#4a6741;">JM</div><div><div class="testi-name">James Mitchell</div><div class="testi-role">Master Carpenter, Mitchell & Sons</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <p class="testi-quote">"Reliable, knowledgeable, and the quality speaks for itself. We've used Oakridge for structural timber on 12 commercial builds. Never once had a problem."</p>
+      <div class="testi-author"><div class="testi-avatar" style="background:#c07c2a;">SP</div><div><div class="testi-name">Sarah Patel</div><div class="testi-role">Project Manager, Horizon Builders</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      <p class="testi-quote">"Ordered walnut for a bespoke kitchen project. The boards arrived on time, perfectly dimensioned, and the grain matching was incredible. Fantastic service."</p>
+      <div class="testi-author"><div class="testi-avatar" style="background:#3d2e1a;">LH</div><div><div class="testi-name">Liam Hughes</div><div class="testi-role">Furniture Designer, LH Studio</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div id="cta-banner" class="reveal">
+  <h2 class="cta-heading">Ready to start your project? <em>Get a free quote today.</em></h2>
+  <a class="btn btn-dark" href="#contact">Request a Quote →</a>
+</div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div>
+      <div class="section-tag reveal">Get In Touch</div>
+      <h2 class="section-title reveal">Let's talk <em>timber</em></h2>
+      <p style="color:var(--muted);margin:1.2rem 0 2.5rem;font-size:1rem;" class="reveal">Whether you need a bulk order, custom milling, or just some expert advice — we're here to help.</p>
+      <div class="contact-info-item reveal"><div class="ci-icon">📞</div><div><div class="ci-label">Phone</div><div class="ci-value">+44 (0)1234 567 890</div></div></div>
+      <div class="contact-info-item reveal"><div class="ci-icon">✉️</div><div><div class="ci-label">Email</div><div class="ci-value">sales@oakridgetimber.co.uk</div></div></div>
+      <div class="contact-info-item reveal"><div class="ci-icon">📍</div><div><div class="ci-label">Yard & Showroom</div><div class="ci-value">Oakridge Mill, Forest Road, Hereford, HR1 2AB</div></div></div>
+      <div class="contact-info-item reveal"><div class="ci-icon">🕐</div><div><div class="ci-label">Opening Hours</div><div class="ci-value">Mon–Fri: 7am–5pm · Sat: 8am–1pm</div></div></div>
+    </div>
+    <div class="reveal">
+      <div class="form-group form-row">
+        <div><label>First Name</label><input type="text" placeholder="John"/></div>
+        <div><label>Last Name</label><input type="text" placeholder="Smith"/></div>
+      </div>
+      <div class="form-group form-row">
+        <div><label>Email</label><input type="email" placeholder="john@company.com"/></div>
+        <div><label>Phone</label><input type="tel" placeholder="+44 7700 000000"/></div>
+      </div>
+      <div class="form-group">
+        <label>Timber Species Interested In</label>
+        <select>
+          <option value="">Select a species...</option>
+          <option>English Oak</option><option>Burmese Teak</option>
+          <option>American Walnut</option><option>Scots Pine</option>
+          <option>Hard Maple</option><option>Western Red Cedar</option>
+          <option>Other / Multiple</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Project Details & Requirements</label>
+        <textarea placeholder="Tell us about your project, quantities needed, dimensions, and any custom requirements..."></textarea>
+      </div>
+      <button id="submit-btn" class="btn btn-wood" style="width:100%;border:none;cursor:none;font-size:0.85rem;">Send Enquiry</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">Oakridge Timber Co.</div>
+      <p class="footer-tagline" style="margin-top:0.8rem;">Supplying premium, sustainably sourced timber to craftspeople and builders since 1978.</p>
+    </div>
+    <div><div class="footer-col-title">Products</div><ul class="footer-links"><li><a href="#">Hardwoods</a></li><li><a href="#">Softwoods</a></li><li><a href="#">Sheet Materials</a></li><li><a href="#">Decking</a></li><li><a href="#">Mouldings</a></li></ul></div>
+    <div><div class="footer-col-title">Services</div><ul class="footer-links"><li><a href="#">Custom Milling</a></li><li><a href="#">Kiln Drying</a></li><li><a href="#">Nationwide Delivery</a></li><li><a href="#">Trade Accounts</a></li><li><a href="#">Timber Grading</a></li></ul></div>
+    <div><div class="footer-col-title">Company</div><ul class="footer-links"><li><a href="#">About Us</a></li><li><a href="#">Sustainability</a></li><li><a href="#">Certifications</a></li><li><a href="#">Blog</a></li><li><a href="#">Contact</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 Oakridge Timber Co. Ltd. All rights reserved.</span>
+    <span class="footer-cert">FSC Certified · PEFC Approved · ISO 9001</span>
+  </div>
+</footer>
+
+<script>
+/* ════ PAGE LOADER ════ */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('loader');
+    loader.classList.add('hide');
+    setTimeout(() => loader.remove(), 700);
+  }, 1200);
+});
+
+/* ════ CUSTOM CURSOR ════ */
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+(function animateCursor() {
+  rx += (mx - rx) * 0.18;
+  ry += (my - ry) * 0.18;
+  dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(animateCursor);
+})();
+document.querySelectorAll('a,button,.prod-card,.pillar,.step,.testi-card').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+});
+
+/* ════ SCROLL PROGRESS BAR ════ */
+const bar = document.getElementById('progress-bar');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+  bar.style.width = pct + '%';
+});
+
+/* ════ NAV SCROLL ════ */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
+
+/* ════ SCROLL REVEAL ════ */
+const reveals = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 100);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => revealObserver.observe(el));
+
+/* ════ ANIMATED COUNTERS ════ */
+function animateCounter(el) {
+  const target = parseInt(el.dataset.count);
+  const suffix = el.dataset.suffix || '';
+  const duration = 1800;
+  const step = target / (duration / 16);
+  let current = 0;
+  const timer = setInterval(() => {
+    current += step;
+    if (current >= target) { current = target; clearInterval(timer); }
+    el.textContent = (target >= 1000 ? Math.round(current/100)/10 + 'k' : Math.round(current)) + suffix;
+  }, 16);
+}
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounter(entry.target);
+      counterObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.4 });
+document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+
+/* ════ PARTICLE SAWDUST ════ */
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = canvas.height + 10;
+    this.size = Math.random() * 3 + 1;
+    this.speedX = (Math.random() - 0.5) * 0.8;
+    this.speedY = -(Math.random() * 0.6 + 0.3);
+    this.opacity = Math.random() * 0.5 + 0.1;
+    this.fade = Math.random() * 0.003 + 0.001;
+    this.rotation = Math.random() * Math.PI * 2;
+    this.rotSpeed = (Math.random() - 0.5) * 0.04;
+    const hue = Math.random() > 0.5 ? '#c07c2a' : '#d4933c';
+    this.color = hue;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    this.rotation += this.rotSpeed;
+    this.opacity -= this.fade;
+    if (this.opacity <= 0 || this.y < -20) this.reset();
+  }
+  draw() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation);
+    ctx.globalAlpha = this.opacity;
+    ctx.fillStyle = this.color;
+    ctx.fillRect(-this.size / 2, -this.size / 4, this.size, this.size / 2);
+    ctx.restore();
+  }
+}
+
+for (let i = 0; i < 60; i++) {
+  const p = new Particle();
+  p.y = Math.random() * canvas.height;
+  particles.push(p);
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+/* ════ PRODUCT CARD TILT ════ */
+document.querySelectorAll('.prod-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = `perspective(600px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) scale(1.02)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+  /* Ripple */
+  card.addEventListener('click', e => {
+    const rect = card.getBoundingClientRect();
+    const r = document.createElement('span');
+    r.classList.add('ripple');
+    const size = Math.max(rect.width, rect.height);
+    r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX - rect.left - size/2}px;top:${e.clientY - rect.top - size/2}px;`;
+    card.appendChild(r);
+    setTimeout(() => r.remove(), 700);
+  });
+});
+
+/* ════ HERO PARALLAX ON MOUSE MOVE ════ */
+const heroRight = document.querySelector('.hero-right');
+if (heroRight) {
+  document.getElementById('hero').addEventListener('mousemove', e => {
+    const rect = document.getElementById('hero').getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    const grid = document.querySelector('.hero-panel-grid');
+    if (grid) grid.style.transform = `translate(${x * 12}px, ${y * 12}px)`;
+  });
+}
+
+/* ════ SUBMIT BUTTON ════ */
+document.getElementById('submit-btn').addEventListener('click', function() {
+  this.textContent = '✓ Enquiry Sent!';
+  this.style.background = 'var(--moss)';
+  this.style.transform = 'scale(0.98)';
+});
+
+/* ════ MAGNETIC NAV LINKS ════ */
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('mousemove', e => {
+    const rect = link.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    link.style.transform = `translate(${x * 0.3}px, ${y * 0.5}px)`;
+  });
+  link.addEventListener('mouseleave', () => { link.style.transform = ''; });
+});
+</script>
+</body>
+</html>
