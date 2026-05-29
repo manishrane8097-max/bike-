@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Home</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <a href="index.html" class="logo">f</a>
+            <div class="search-box">
+                <input type="text" placeholder="Search Facebook">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <div class="header-icons">
+                <a href="index.html" class="icon-btn active"><i class="fas fa-home"></i></a>
+                <a href="friends.html" class="icon-btn"><i class="fas fa-users"></i></a>
+                <a href="notifications.html" class="icon-btn"><i class="fas fa-bell"></i></a>
+                <a href="messages.html" class="icon-btn"><i class="fas fa-comment"></i></a>
+                <img src="https://via.placeholder.com/40" alt="Profile" class="profile-pic" onclick="window.location.href='profile.html'">
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <aside class="left-sidebar">
+            <div class="sidebar-menu">
+                <a href="profile.html" class="sidebar-item">
+                    <svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M14.5 12c0-1.1-.9-2-2-2s-2 .9-2 2 .9 2 2 2 2-.9 2-2zm0-6c0-.83-.67-1.5-1.5-1.5S11.5 5.17 11.5 6 12.17 7.5 13 7.5 14.5 6.83 14.5 6zM22 12c0 .3-.02.74-.07 1.14-.18.46-.39.9-.7 1.34l-1.77-1.77c.07-.11.11-.23.11-.36 0-1.1-.9-2-2-2H7.99L9 6H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h8v-6h5c1.1 0 2-.9 2-2v-3.28l-.46-.46L22 12z"/></svg>
+                    Profile
+                </a>
+                <a href="friends.html" class="sidebar-item">
+                    <i class="fas fa-users sidebar-icon"></i>
+                    Friends
+                </a>
+                <a href="messages.html" class="sidebar-item">
+                    <i class="fas fa-comment sidebar-icon"></i>
+                    Messages
+                </a>
+                <a href="notifications.html" class="sidebar-item">
+                    <i class="fas fa-bell sidebar-icon"></i>
+                    Notifications
+                </a>
+            </div>
+        </aside>
+
+        <!-- Middle Content -->
+        <main class="middle-content">
+            <!-- Create Post -->
+            <div class="create-post">
+                <div class="post-input">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="User" class="user-avatar">
+                    <input type="text" placeholder="What's on your mind, John?">
+                </div>
+            </div>
+
+            <!-- Posts Feed -->
+            <div class="posts-feed">
+                <!-- Post 1 -->
+                <article class="post">
+                    <div class="post-header">
+                        <div class="post-author">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&crop=face" alt="John Doe" class="author-avatar">
+                            <div class="author-info">
+                                <h4>John Doe</h4>
+                                <p>2 hours ago • <i class="fas fa-globe"></i></p>
+                            </div>
+                        </div>
+                        <div class="post-menu">•••</div>
+                    </div>
+                    <div class="post-content">
+                        <p class="post-text">Just finished an amazing project! 🚀 Excited to share more soon. #coding #developerlife</p>
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&h=400&fit=crop" alt="Project" class="post-image">
+                    </div>
+                    <div class="post-actions">
+                        <a href="#" class="action-btn liked">
+                            <svg class="action-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            Like (24)
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-comment action-icon"></i>
+                            Comment (12)
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-share action-icon"></i>
+                            Share
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Post 2 -->
+                <article class="post">
+                    <div class="post-header">
+                        <div class="post-author">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=32&h=32&fit=crop&crop=face" alt="Sarah Wilson" class="author-avatar">
+                            <div class="author-info">
+                                <h4>Sarah Wilson</h4>
+                                <p>1 day ago • <i class="fas fa-globe"></i></p>
+                            </div>
+                        </div>
+                        <div class="post-menu">•••</div>
+                    </div>
+                    <div class="post-content">
+                        <p class="post-text">Weekend vibes! ☕📚 Loving this cozy reading spot. What's everyone reading this weekend?</p>
+                        <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=500&h=400&fit=crop" alt="Reading" class="post-image">
+                    </div>
+                    <div class="post-actions">
+                        <a href="#" class="action-btn">
+                            <svg class="action-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            Like (47)
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-comment action-icon"></i>
+                            Comment (23)
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-share action-icon"></i>
+                            Share
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Post 3 -->
+                <article class="post">
+                    <div class="post-header">
+                        <div class="post-author">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face" alt="Mike Davis" class="author-avatar">
+                            <div class="author-info">
+                                <h4>Mike Davis</h4>
+                                <p>2 days ago • <i class="fas fa-users"></i> Friends</p>
+                            </div>
+                        </div>
+                        <div class="post-menu">•••</div>
+                    </div>
+                    <div class="post-content">
+                        <p class="post-text">Team lunch today! Great food and even better company 🍕👥</p>
+                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3133?w=500&h=400&fit=crop" alt="Lunch" class="post-image">
+                    </div>
+                    <div class="post-actions">
+                        <a href="#" class="action-btn liked">
+                            <svg class="action-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            Like (32)
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-comment action-icon"></i>
+                            Comment (15)
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-share action-icon"></i>
+                            Share
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Post 4 - Text Only -->
+                <article class="post">
+                    <div class="post-header">
+                        <div class="post-author">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=32&h=32&fit=crop&crop=face" alt="Emily Johnson" class="author-avatar">
+                            <div class="author-info">
+                                <h4>Emily Johnson</h4>
+                                <p>3 days ago • <i class="fas fa-globe"></i></p>
+                            </div>
+                        </div>
+                        <div class="post-menu">•••</div>
+                    </div>
+                    <div class="post-content">
+                        <p class="post-text">Feeling grateful today. Sometimes we need to take a moment to appreciate the little things that make life beautiful. 🌸💕</p>
+                    </div>
+                    <div class="post-actions">
+                        <a href="#" class="action-btn">
+                            <svg class="action-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            Like (68)
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-comment action-icon"></i>
+                            Comment (34)
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-share action-icon"></i>
+                            Share
+                        </a>
+                    </div>
+                </article>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+            <div class="contacts-widget">
+                <h3 class="widget-title">Contacts</h3>
+                <div class="contact-item">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=36&h=36&fit=crop&crop=face" alt="John Smith" class="contact-avatar">
+                    <div class="contact-info">
+                        <h5>John Smith</h5>
+                        <p>Active 2m ago</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=36&h=36&fit=crop&crop=face" alt="Emily Johnson" class="contact-avatar">
+                    <div class="contact-info">
+                        <h5>Emily Johnson</h5>
+                        <p>Active 5m ago</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=36&h=36&fit=crop&crop=face" alt="Mike Davis" class="contact-avatar">
+                    <div class="contact-info">
+                        <h5>Mike Davis</h5>
+                        <p>Active now</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=36&h=36&fit=crop&crop=face" alt="Sarah Wilson" class="contact-avatar">
+                    <div class="contact-info">
+                        <h5>Sarah Wilson</h5>
+                        <p>Active 1h ago</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sponsored Widget -->
+            <div class="contacts-widget" style="margin-top: 24px;">
+                <h3 class="widget-title">Sponsored</h3>
+                <div style="display: flex; align-items: center; padding: 12px; cursor: pointer;">
+                    <img src="https://via.placeholder.com/80x60/1877f2/ffffff?text=Ad" style="width: 80px; height: 60px; border-radius: 8px; margin-right: 12px;">
+                    <div>
+                        <h5 style="font-size: 14px; margin-bottom: 4px;">Learn Web Development</h5>
+                        <p style="color: #65676b; font-size: 12px;">Sponsored • udemy.com</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Simple navigation highlighting
+        document.querySelectorAll('.icon-btn, .sidebar-item').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (this.href !== window.location.href) {
+                    document.querySelectorAll('.icon-btn, .sidebar-item').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Like button toggle
+        document.querySelectorAll('.action-btn.liked').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.classList.toggle('liked');
+                const likeText = this.querySelector('span');
+                if (likeText) {
+                    const count = parseInt(likeText.textContent) || 0;
+                    likeText.textContent = this.classList.contains('liked') ? `Like (${count})` : `Liked (${count})`;
+                }
+            });
+        });
+
+        // Post input click
+        document.querySelector('.post-input').addEventListener('click', function() {
+            alert('Create post functionality - Modal would open here!');
+        });
+    </script>
+</body>
+</html>

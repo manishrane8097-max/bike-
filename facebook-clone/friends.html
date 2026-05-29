@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Friends</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <a href="index.html" class="logo">f</a>
+            <div class="search-box">
+                <input type="text" placeholder="Search Facebook">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <div class="header-icons">
+                <a href="index.html" class="icon-btn"><i class="fas fa-home"></i></a>
+                <a href="friends.html" class="icon-btn active"><i class="fas fa-users"></i></a>
+                <a href="notifications.html" class="icon-btn"><i class="fas fa-bell"></i></a>
+                <a href="messages.html" class="icon-btn"><i class="fas fa-comment"></i></a>
+                <img src="https://via.placeholder.com/40" alt="Profile" class="profile-pic" onclick="window.location.href='profile.html'">
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <aside class="left-sidebar">
+            <div class="sidebar-menu">
+                <a href="profile.html" class="sidebar-item">
+                    <svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M14.5 12c0-1.1-.9-2-2-2s-2 .9-2 2 .9 2 2 2 2-.9 2-2zm0-6c0-.83-.67-1.5-1.5-1.5S11.5 5.17 11.5 6 12.17 7.5 13 7.5 14.5 6.83 14.5 6zM22 12c0 .3-.02.74-.07 1.14-.18.46-.39.9-.7 1.34l-1.77-1.77c.07-.11.11-.23.11-.36 0-1.1-.9-2-2-2H7.99L9 6H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h8v-6h5c1.1 0 2-.9 2-2v-3.28l-.46-.46L22 12z"/></svg>
+                    Profile
+                </a>
+                <a href="friends.html" class="sidebar-item active">
+                    <i class="fas fa-users sidebar-icon"></i>
+                    Friends
+                </a>
+                <a href="messages.html" class="sidebar-item">
+                    <i class="fas fa-comment sidebar-icon"></i>
+                    Messages
+                </a>
+                <a href="notifications.html" class="sidebar-item">
+                    <i class="fas fa-bell sidebar-icon"></i>
+                    Notifications
+                </a>
+            </div>
+        </aside>
+
+        <!-- Middle Content -->
+        <main class="middle-content">
+            <div class="page-content">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                    <div>
+                        <i class="fas fa-users" style="font-size: 24px; color: #1877f2; margin-right: 12px;"></i>
+                        <h2 style="font-size: 24px; font-weight: 600; display: inline;">Friends</h2>
+                        <span style="background: #e4e6ea; padding: 4px 12px; border-radius: 20px; font-size: 14px; margin-left: 12px;">1,234 friends</span>
+                    </div>
+                    <div>
+                        <select style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; margin-right: 8px;">
+                            <option>All Friends</option>
+                            <option>Recent</option>
+                            <option>Online</option>
+                        </select>
+                        <button style="padding: 8px 16px; background: #1877f2; color: white; border: none; border-radius: 6px; cursor: pointer;">Add Friend</button>
+                    </div>
+                </div>
+                
+                <div class="friend-grid">
+                    <div class="friend-card">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=140&h=140&fit=crop" alt="John" class="friend-avatar">
+                        <h4 class="friend-name">John Doe</h4>
+                        <button style="background: #42b883; color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">Message</button>
+                    </div>
+                    <div class="friend-card">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=140&h=140&fit=crop" alt="Sarah" class="friend-avatar">
+                        <h4 class="friend-name">Sarah Wilson</h4>
+                        <button style="background: #42b883; color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">Message</button>
+                    </div>
+                    <div class="friend-card">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=140&h=140&fit=crop" alt="Mike" class="friend-avatar">
+                        <h4 class="friend-name">Mike Davis</h4>
+                        <button style="background: #42b883; color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">Message</button>
+                    </div>
+                    <div class="friend-card">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=140&h=140&fit=crop" alt="Emily" class="friend-avatar">
+                        <h4 class="friend-name">Emily Johnson</h4>
+                        <button style="background: #42b883; color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">Message</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+            <div class="contacts-widget">
+                <h3 class="widget-title">People You May Know</h3>
+                <div class="contact-item">
+                    <img src="https://via.placeholder.com/36" alt="Contact" class="contact-avatar">
+                    <div class="contact-info">
+                        <h5>Alex Brown</h5>
+                        <p>2 mutual friends</p>
+                    </div>
+                    <button style="background: #1877f2; color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; margin-left: auto;">Add</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

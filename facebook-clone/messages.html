@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Messages</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .messages-container { 
+            display: flex; 
+            height: calc(100vh - 140px); 
+            background: #f0f2f5;
+        }
+        .chat-list { 
+            width: 300px; 
+            background: #fff; 
+            border-right: 1px solid #e4e6ea; 
+            overflow-y: auto; 
+        }
+        .chat-list-item { 
+            padding: 12px; 
+            cursor: pointer; 
+            border-bottom: 1px solid #f0f2f5; 
+            display: flex; 
+            align-items: center; 
+        }
+        .chat-list-item:hover { 
+            background: #f0f2f5; 
+        }
+        .chat-list-avatar { 
+            width: 48px; 
+            height: 48px; 
+            border-radius: 50%; 
+            margin-right: 12px; 
+        }
+        .chat-preview { 
+            flex: 1; 
+            min-width: 0; 
+        }
+        .chat-name { 
+            font-weight: 600; 
+            margin-bottom: 2px; 
+        }
+        .chat-last-message { 
+            color: #65676b; 
+            font-size: 14px; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+        }
+        .chat-main { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .chat-messages { 
+            flex: 1; 
+            padding: 20px; 
+            overflow-y: auto; 
+        }
+        .message { 
+            margin-bottom: 16px; 
+            display: flex; 
+        }
+        .message.sent { 
+            justify-content: flex-end; 
+        }
+        .message.received { 
+            justify-content: flex-start; 
+        }
+        .message-bubble { 
+            max-width: 70%; 
+            padding: 8px 12px; 
+            border-radius: 18px; 
+            position: relative; 
+        }
+        .message.sent .message-bubble { 
+            background: #1877f2; 
+            color: white; 
+            border-bottom-right-radius: 4px; 
+        }
+        .message.received .message-bubble { 
+            background: #fff; 
+            border: 1px solid #e4e6ea; 
+            border-bottom-left-radius: 4px; 
+        }
+        .message-time { 
+            font-size: 12px; 
+            opacity: 0.7; 
+            margin-top: 2px; 
+        }
+        .chat-input-container { 
+            padding: 16px; 
+            background: #fff; 
+            border-top: 1px solid #e4e6ea; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+        }
+        .chat-input { 
+            flex: 1; 
+            padding: 12px 16px; 
+            border: 1px solid #e4e6ea; 
+            border-radius: 24px; 
+            outline: none; 
+        }
+        .send-btn { 
+            background: #1877f2; 
+            color: white; 
+            border: none; 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            cursor: pointer; 
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <a href="index.html" class="logo">f</a>
+            <div class="search-box">
+                <input type="text" placeholder="Search Messenger">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <div class="header-icons">
+                <a href="index.html" class="icon-btn"><i class="fas fa-home"></i></a>
+                <a href="friends.html" class="icon-btn"><i class="fas fa-users"></i></a>
+                <a href="notifications.html" class="icon-btn"><i class="fas fa-bell"></i></a>
+                <a href="messages.html" class="icon-btn active"><i class="fas fa-comment"></i></a>
+                <img src="https://via.placeholder.com/40" alt="Profile" class="profile-pic" onclick="window.location.href='profile.html'">
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <aside class="left-sidebar">
+            <div class="sidebar-menu">
+                <a href="profile.html" class="sidebar-item">
+                    <svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M14.5 12c0-1.1-.9-2-2-2s-2 .9-2 2 .9 2 2 2 2-.9 2-2zm0-6c0-.83-.67-1.5-1.5-1.5S11.5 5.17 11.5 6 12.17 7.5 13 7.5 14.5 6.83 14.5 6zM22 12c0 .3-.02.74-.07 1.14-.18.46-.39.9-.7 1.34l-1.77-1.77c.07-.11.11-.23.11-.36 0-1.1-.9-2-2-2H7.99L9 6H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h8v-6h5c1.1 0 2-.9 2-2v-3.28l-.46-.46L22 12z"/></svg>
+                    Profile
+                </a>
+                <a href="friends.html" class="sidebar-item">
+                    <i class="fas fa-users sidebar-icon"></i>
+                    Friends
+                </a>
+                <a href="messages.html" class="sidebar-item active">
+                    <i class="fas fa-comment sidebar-icon"></i>
+                    Messages
+                </a>
+                <a href="notifications.html" class="sidebar-item">
+                    <i class="fas fa-bell sidebar-icon"></i>
+                    Notifications
+                </a>
+            </div>
+        </aside>
+
+        <!-- Messages Container -->
+        <main class="middle-content" style="max-width: none;">
+            <div class="messages-container">
+                <div class="chat-list">
+                    <div class="chat-list-item active">
+                        <img src="https://via.placeholder.com/48" alt="John" class="chat-list-avatar">
+                        <div class="chat-preview">
+                            <div class="chat-name">John Doe</div>
+                            <div class="chat-last-message">Hey! How's it going?</div>
+                        </div>
+                        <div style="width: 12px; height: 12px; background: #42b883; border-radius: 50%;"></div>
+                    </div>
+                    <div class="chat-list-item">
+                        <img src="https://via.placeholder.com/48" alt="Sarah" class="chat-list-avatar">
+                        <div class="chat-preview">
+                            <div class="chat-name">Sarah Wilson</div>
+                            <div class="chat-last-message">Thanks for the help!</div>
+                        </div>
+                    </div>
+                    <div class="chat-list-item">
+                        <img src="https://via.placeholder.com/48" alt="Mike" class="chat-list-avatar">
+                        <div class="chat-preview">
+                            <div class="chat-name">Mike Davis</div>
+                            <div class="chat-last-message">See you tomorrow</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-main">
+                    <div class="chat-messages">
+                        <div class="message received">
+                            <div class="message-bubble">
+                                Hey! How's it going? Long time no talk!
+                                <div class="message-time">2:30 PM</div>
+                            </div>
+                        </div>
+                        <div class="message sent">
+                            <div class="message-bubble">
+                                Hey John! I'm good, been busy with work. How about you?
+                                <div class="message-time">2:32 PM</div>
+                            </div>
+                        </div>
+                        <div class="message received">
+                            <div class="message-bubble">
+                                Same here, crazy week! Let's catch up soon 🚀
+                                <div class="message-time">2:35 PM</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <i class="fas fa-plus-circle" style="font-size: 24px; color: #65676b; cursor: pointer;"></i>
+                        <input type="text" class="chat-input" placeholder="Aa">
+                        <button class="send-btn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

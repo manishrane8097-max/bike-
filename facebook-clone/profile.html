@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Profile</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .profile-cover {
+            height: 320px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            border-radius: 12px 12px 0 0;
+            overflow: hidden;
+        }
+        .profile-pic-large {
+            width: 168px;
+            height: 168px;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            position: absolute;
+            bottom: -84px;
+            left: 24px;
+            object-fit: cover;
+        }
+        .profile-info {
+            padding: 80px 24px 24px;
+            background: #fff;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,.1);
+        }
+        .profile-header {
+            display: flex;
+            align-items: flex-end;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .profile-name {
+            font-size: 32px;
+            font-weight: 300;
+            margin-bottom: 4px;
+        }
+        .profile-stats {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+        .stat-item {
+            cursor: pointer;
+        }
+        .stat-number {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .stat-label {
+            color: #65676b;
+            font-size: 14px;
+        }
+        .profile-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .profile-btn {
+            padding: 10px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .profile-btn-primary {
+            background: #1877f2;
+            color: white;
+        }
+        .profile-btn-primary:hover {
+            background: #166fe5;
+        }
+        .profile-btn-secondary {
+            background: #e4e6ea;
+            color: #1c1e21;
+            border: 1px solid #ccd0d5;
+        }
+        .profile-btn-secondary:hover {
+            background: #d8d9db;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <a href="index.html" class="logo">f</a>
+            <div class="search-box">
+                <input type="text" placeholder="Search Facebook">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <div class="header-icons">
+                <a href="index.html" class="icon-btn"><i class="fas fa-home"></i></a>
+                <a href="friends.html" class="icon-btn"><i class="fas fa-users"></i></a>
+                <a href="notifications.html" class="icon-btn"><i class="fas fa-bell"></i></a>
+                <a href="messages.html" class="icon-btn"><i class="fas fa-comment"></i></a>
+                <img src="https://via.placeholder.com/40" alt="Profile" class="profile-pic">
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <aside class="left-sidebar">
+            <div class="sidebar-menu">
+                <a href="profile.html" class="sidebar-item active">
+                    <svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M14.5 12c0-1.1-.9-2-2-2s-2 .9-2 2 .9 2 2 2 2-.9 2-2zm0-6c0-.83-.67-1.5-1.5-1.5S11.5 5.17 11.5 6 12.17 7.5 13 7.5 14.5 6.83 14.5 6zM22 12c0 .3-.02.74-.07 1.14-.18.46-.39.9-.7 1.34l-1.77-1.77c.07-.11.11-.23.11-.36 0-1.1-.9-2-2-2H7.99L9 6H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h8v-6h5c1.1 0 2-.9 2-2v-3.28l-.46-.46L22 12z"/></svg>
+                    Profile
+                </a>
+                <a href="friends.html" class="sidebar-item">
+                    <i class="fas fa-users sidebar-icon"></i>
+                    Friends
+                </a>
+                <a href="messages.html" class="sidebar-item">
+                    <i class="fas fa-comment sidebar-icon"></i>
+                    Messages
+                </a>
+                <a href="notifications.html" class="sidebar-item">
+                    <i class="fas fa-bell sidebar-icon"></i>
+                    Notifications
+                </a>
+            </div>
+        </aside>
+
+        <!-- Profile Content -->
+        <main class="middle-content">
+            <!-- Cover Photo & Profile Picture -->
+            <div class="profile-cover">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=168&h=168&fit=crop&crop=face" alt="Profile Picture" class="profile-pic-large">
+            </div>
+            
+            <div class="profile-info">
+                <div class="profile-header">
+                    <h1 class="profile-name">John Doe</h1>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">1,234</div>
+                            <div class="stat-label">friends</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">156</div>
+                            <div class="stat-label">photos</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">89</div>
+                            <div class="stat-label">likes</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="profile-buttons">
+                    <a href="#" class="profile-btn profile-btn-primary">Edit Profile</a>
+                    <a href="#" class="profile-btn profile-btn-secondary">View As</a>
+                    <a href="#" class="profile-btn profile-btn-secondary"><i class="fas fa-ellipsis-h" style="margin-right: 8px;"></i>Find Friends</a>
+                </div>
+                
+                <div style="margin-top: 24px;">
+                    <div style="display: flex; gap: 32px; font-size: 16px; font-weight: 500;">
+                        <a href="#posts" style="color: #1877f2; text-decoration: none;">Posts</a>
+                        <a href="#about" style="color: #1c1e21; text-decoration: none;">About</a>
+                        <a href="#friends" style="color: #1c1e21; text-decoration: none;">Friends</a>
+                        <a href="#photos" style="color: #1c1e21; text-decoration: none;">Photos</a>
+                        <a href="#videos" style="color: #1c1e21; text-decoration: none;">Videos</a>
+                    </div>
+                </div>
+                
+                <!-- Recent Posts -->
+                <div class="posts-feed" style="margin-top: 24px;">
+                    <article class="post">
+                        <div class="post-header">
+                            <div class="post-author">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&crop=face" alt="John Doe" class="author-avatar">
+                                <div class="author-info">
+                                    <h4>John Doe</h4>
+                                    <p>Your post • 2 hours ago</p>
+                                </div>
+                            </div>
+                            <div class="post-menu">•••</div>
+                        </div>
+                        <div class="post-content">
+                            <p class="post-text">Updated my profile picture! 📸 What do you think?</p>
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&h=400&fit=crop" alt="Post" class="post-image">
+                        </div>
+                        <div class="post-actions">
+                            <a href="#" class="action-btn liked">
+                                <svg class="action-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                Like (24)
+                            </a>
+                            <a href="#" class="action-btn">
+                                <i class="fas fa-comment action-icon"></i>
+                                Comment (12)
+                            </a>
+                            <a href="#" class="action-btn">
+                                <i class="fas fa-share action-icon"></i>
+                                Share
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="post">
+                        <div class="post-header">
+                            <div class="post-author">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&crop=face" alt="John Doe" class="author-avatar">
+                                <div class="author-info">
+                                    <h4>John Doe</h4>
+                                    <p>Your post • 1 day ago</p>
+                                </div>
+                            </div>
+                            <div class="post-menu">•••</div>
+                        </div>
+                        <div class="post-content">
+                            <p class="post-text">Great weekend with friends! 🌟</p>
+                        </div>
+                        <div class="post-actions">
+                            <a href="#" class="action-btn">
+                                <svg class="action-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                Like (18)
+                            </a>
+                            <a href="#" class="action-btn">
+                                <i class="fas fa-comment action-icon"></i>
+                                Comment (8)
+                            </a>
+                            <a href="#" class="action-btn">
+                                <i class="fas fa-share action-icon"></i>
+                                Share
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+            <div class="contacts-widget">
+                <h3 class="widget-title">Contact Info</h3>
+                <p style="color: #65676b; font-size: 14px; margin-bottom: 8px;">john.doe@example.com</p>
+                <p style="color: #65676b; font-size: 14px; margin-bottom: 16px;">+1 (555) 123-4567</p>
+                
+                <h3 class="widget-title" style="margin-top: 24px;">About</h3>
+                <p style="color: #65676b; font-size: 14px; line-height: 1.4;">
+                    Software Developer at TechCorp<br>
+                    Lives in New York<br>
+                    From California<br>
+                    john.doe@example.com
+                </p>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Simple navigation highlighting
+        document.querySelectorAll('.icon-btn, .sidebar-item').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.href !== window.location.href) {
+                    document.querySelectorAll('.icon-btn, .sidebar-item').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Profile stats click handlers
+        document.querySelectorAll('.stat-item').forEach(item => {
+            item.addEventListener('click', function() {
+                alert('This would navigate to friends/photos/likes page');
+            });
+        });
+    </script>
+</body>
+</html>
